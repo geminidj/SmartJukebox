@@ -1,0 +1,9 @@
+<div>
+  <h1>Current queue</h1>
+</div>
+
+<div class="songlist">
+  <ul>
+    <li *ngFor="let song of songList">{{song.id}} - {{song.songID}} - {{song.artist}} - {{song.title}}</li>
+  </ul>
+</div>
