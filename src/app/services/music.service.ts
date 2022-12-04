@@ -13,13 +13,14 @@ export class MusicService{
   constructor(private httpClient: HttpClient) {
   }
 
-  private data = [{id:1,artist:'Gloryhammer',name:'The Hollywood Hootsman'},
-    {id:2,artist:'Alestorm',name:'Drink'},
-    {id:3,artist:'Pendulum',name:'Granite'}]
-
   getQueue():Observable<Song[]>{
-
+    //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
     return this.httpClient.get<Song[]>('http://localhost:8080/getqueue');
+  }
+
+  getFullSongList():Observable<Song[]>{
+    //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
+    return this.httpClient.get<Song[]>('http://localhost:8080/getallsongs');
   }
 
 

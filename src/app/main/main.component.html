@@ -3,7 +3,16 @@
 </div>
 
 <div class="songlist">
+  <app-songitem *ngFor="let song of queueList; let i = index" [songID]="song.songID" [artist]="song.artist" [position]="song.id" [title]="song.title"></app-songitem>
+</div>
+
+<hr>
+
+<div>
+  <h1>Full songlist</h1>
   <ul>
-    <li *ngFor="let song of songList">{{song.id}} - {{song.songID}} - {{song.artist}} - {{song.title}}</li>
+    <li *ngFor="let song of fullSongList; let i = index">{{song.artist}} - {{song.title}}</li>
   </ul>
 </div>
+
+

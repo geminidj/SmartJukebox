@@ -8,17 +8,21 @@ import {Observable} from "rxjs";
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
-  songList: Song[] = [];
+  queueList: Song[] = [];
 
+  fullSongList: Song[] = [];
   constructor(private musicService: MusicService) {
   }
   ngOnInit():void{
     this.getDynamicSongQueue();
   }
 
+  getFullSongList(){
+    this.musicService.getFullSongList().subscribe((retrievedData: Song[]) => this.fullSongList = retrievedData);
+  }
 
   getDynamicSongQueue(){
-    this.musicService.getQueue().subscribe((retrievedData: Song[]) => this.songList = retrievedData);
+    this.musicService.getQueue().subscribe((retrievedData: Song[]) => this.queueList = retrievedData);
   }
 }
 
