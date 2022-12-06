@@ -1,0 +1,20 @@
+.panel {
+  background-color: darkgray;
+  margin-top: 50px;
+}
+
+.col10 {
+  width: 10%;
+  float: left;
+}
+
+.col80 {
+  width: 80%;
+  float: left;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}

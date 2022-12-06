@@ -1,18 +1,54 @@
-<div>
-  <h1>Current queue</h1>
+<div class="panel">
+  <div class="row">
+    <div class="col10"><p></p></div>
+    <div class="col80">
+      <h1>Now Playing</h1>
+      <h3>Artist: {{nowPlaying[0].artist}}</h3>
+      <h3>Title: {{nowPlaying[0].title}}</h3>
+    </div>
+    <div class="col10"><p></p></div>
+  </div>
 </div>
 
-<div class="songlist">
-  <app-songitem *ngFor="let song of queueList; let i = index" [songID]="song.songID" [artist]="song.artist" [position]="song.id" [title]="song.title"></app-songitem>
+<div class="panel">
+  <div class="row">
+    <div class="col10"><p></p></div>
+    <div class="col80">
+      <h1>Current queue</h1>
+      <div class="songlist">
+        <app-songitem
+          *ngFor="let song of queueList; let i = index"
+          [songID]="song.songID"
+          [artist]="song.artist"
+          [position]="song.id"
+          [title]="song.title"
+        ></app-songitem>
+      </div>
+    </div>
+    <div class="col10"><p></p></div>
+  </div>
 </div>
 
-<hr>
-
-<div>
-  <h1>Full songlist</h1>
-  <ul>
-    <li *ngFor="let song of fullSongList; let i = index">{{song.artist}} - {{song.title}}</li>
-  </ul>
+<div class="panel">
+  <div class="row">
+    <div class="col10"><p></p></div>
+    <div class="col80">
+      <h1>Available Songs</h1>
+      <div>
+        <table>
+          <tr>
+            <th>Artist</th>
+            <th>Title</th>
+            <th>Add</th>
+          </tr>
+          <tr *ngFor="let song of fullSongList; let i = index">
+            <td>{{song.artist}}</td>
+            <td>{{song.title}}</td>
+            <button type="submit" (click)="addToQueue(song.ID)">Add to queue</button>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col10"><p></p></div>
+  </div>
 </div>
-
-

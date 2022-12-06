@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { SongitemComponent } from './songitem/songitem.component';
 import { MainComponent } from './main/main.component';
+import { GenericpanelComponent } from './genericpanel/genericpanel.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { MainComponent } from './main/main.component';
     HeaderComponent,
     SongitemComponent,
     MainComponent,
+    GenericpanelComponent,
   ],
   imports: [
     BrowserModule,

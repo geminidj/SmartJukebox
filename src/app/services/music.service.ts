@@ -1,29 +1,58 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {HttpClientModule} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {Song} from "../main/main.component";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { Observable, Subscription } from 'rxjs';
+import { Song } from '../song';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
+export class MusicService {
+  username: string = 'default';
+  userIP: string = '192.168.1.2';
+  message: string = 'default-blank';
 
-export class MusicService{
+  httpPostOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }),
+  };
 
-  constructor(private httpClient: HttpClient) {
-  }
+  constructor(private httpClient: HttpClient) {}
 
-  getQueue():Observable<Song[]>{
+  getQueue(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
     return this.httpClient.get<Song[]>('http://localhost:8080/getqueue');
   }
 
-  getFullSongList():Observable<Song[]>{
+  getFullSongList(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
     return this.httpClient.get<Song[]>('http://localhost:8080/getallsongs');
   }
 
+  getNowPlaying(): Observable<Song[]> {
+    //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
+    return this.httpClient.get<Song[]>('http://localhost:8080/getnowplaying', {
+      headers: new HttpHeaders().set('Content-Type', 'x-www-form-urlencoded'),
+    });
+  }
 
+  addToQueue(songID: number): Subscription {
+    console.log('musicservice - add called');
+    console.log('Song database ID: ' + songID);
+
+    const payload = new HttpParams()
+      .set('username', this.username)
+      .set('userIP', this.userIP)
+      .set('message', this.message)
+      .set('songID', songID);
+
+    return this.httpClient
+      .post(
+        'http://localhost:8080/addsong',
+        payload.toString(),
+        this.httpPostOptions
+      )
+      .subscribe((v) => console.info(v));
+  }
 }
-
-
