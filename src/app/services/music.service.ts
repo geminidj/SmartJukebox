@@ -32,9 +32,14 @@ export class MusicService {
 
   getNowPlaying(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
-    return this.httpClient.get<Song[]>('http://localhost:8080/getnowplaying', {
-      headers: new HttpHeaders().set('Content-Type', 'x-www-form-urlencoded'),
-    });
+    return this.httpClient.get<Song[]>('http://localhost:8080/getnowplaying');
+  }
+
+  getNumSongs(): Observable<number> {
+    //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
+    return this.httpClient.get<number>(
+      'http://localhost:8080/getnumberofsongs'
+    );
   }
 
   addToQueue(songID: number): Subscription {

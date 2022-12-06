@@ -15,12 +15,15 @@ export class MainComponent {
 
   nowPlaying: Song[] = [];
 
+  numSongs: number = 0;
+
   constructor(private musicService: MusicService) {}
 
   ngOnInit(): void {
     this.getDynamicSongQueue();
     this.getNowPlaying();
     this.getFullSongList();
+    this.getNumSongs();
   }
 
   getFullSongList() {
@@ -41,6 +44,14 @@ export class MainComponent {
     this.musicService
       .getNowPlaying()
       .subscribe((retrievedData: Song[]) => (this.nowPlaying = retrievedData));
+  }
+
+  getNumSongs() {
+    this.musicService
+      .getNumSongs()
+      .subscribe(
+        (retrievedData: any) => (this.numSongs = retrievedData[0].count)
+      );
   }
 
   addToQueue(songID: number) {
