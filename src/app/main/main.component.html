@@ -41,18 +41,55 @@
             <th>Title</th>
             <th>Add</th>
           </tr>
-          <tr *ngFor="let song of fullSongList; let i = index">
+          <tr *ngFor="let song of displayedSongList; let i = index">
             <td>{{song.artist}}</td>
             <td>{{song.title}}</td>
             <button type="submit" (click)="addToQueue(song.ID)">Add to queue</button>
           </tr>
         </table>
       </div>
+      <div>
+        <div class="pagination">
+          <a class="child" (click)="setVisibleSongs(pageNumbers[0])">{{pageNumbers[0]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[1])">{{pageNumbers[1]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[2])">{{pageNumbers[2]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[3])">{{pageNumbers[3]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[4])">{{pageNumbers[4]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[5])">{{pageNumbers[5]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[6])">{{pageNumbers[6]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[7])">{{pageNumbers[7]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[8])">{{pageNumbers[8]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[9])">{{pageNumbers[9]}}</a>
+          <a class="child" (click)="setVisibleSongs(pageNumbers[10])">{{pageNumbers[10]}}</a>
+        </div>
+      </div>
     </div>
     <div class="col10"><p></p></div>
   </div>
 </div>
 
-<div class="panel">
-  <h1>Number of songs: {{numSongs}}</h1>
-</div>
+<!--<div class="panel">-->
+<!--  <div class="row">-->
+<!--    <div class="col10"><p></p></div>-->
+<!--    <div class=col80>-->
+<!--      <div><h1>Available Songs</h1>-->
+<!--        <div>-->
+<!--          <table>-->
+<!--            <tr>-->
+<!--              <th>Artist</th>-->
+<!--              <th>Title</th>-->
+<!--              <th>Add</th>-->
+<!--            </tr>-->
+<!--            <tr *ngFor="let song of displayedSongList; let i = index">-->
+<!--              <td>{{song.artist}}</td>-->
+<!--              <td>{{song.title}}</td>-->
+<!--              <button type="submit" (click)="addToQueue(song.ID)">Add to queue</button>-->
+<!--            </tr>-->
+<!--          </table>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div>TODO - PAGINATION SELECTOR BOXES</div>-->
+<!--    </div>-->
+<!--    <div class="col10"></div>-->
+<!--  </div>-->
+<!--</div>-->

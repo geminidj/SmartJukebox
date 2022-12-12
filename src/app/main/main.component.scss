@@ -18,3 +18,29 @@
   display: table;
   clear: both;
 }
+
+.pagination {
+  display: inline-block;
+}
+
+.child {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  border: 1px solid #ddd; /* Gray */
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+}
+
