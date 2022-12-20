@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {HttpClient} from "@angular/common/http";
-import {HttpClientModule} from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +9,7 @@ import { HeaderComponent } from './header/header.component';
 import { SongitemComponent } from './songitem/songitem.component';
 import { MainComponent } from './main/main.component';
 import { GenericpanelComponent } from './genericpanel/genericpanel.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,12 +19,8 @@ import { GenericpanelComponent } from './genericpanel/genericpanel.component';
     MainComponent,
     GenericpanelComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-  ],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

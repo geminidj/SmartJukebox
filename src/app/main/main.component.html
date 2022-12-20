@@ -34,34 +34,59 @@
     <div class="col10"><p></p></div>
     <div class="col80">
       <h1>Available Songs</h1>
+
+      <!--Search box and submit button-->
+      <form role="form" (submit)="searchSongList()" (reset)="resetSongList()">
+        <input type="text" name="search" id="search" required="required" [(ngModel)]="searchTerm"/>
+        <button type="submit">Search</button>
+        <button type="reset">Reset</button>
+      </form>
+      <form>
+        <button (click)="showRandomSongs()">Random Songs</button>
+      </form>
+
+      <!--Browse section-->
       <div>
         <table>
           <tr>
-            <th>Artist</th>
-            <th>Title</th>
-            <th>Add</th>
+            <th class="table-artist">Artist</th>
+            <th class="table-title">Title</th>
+            <th class="table-add">Add</th>
           </tr>
           <tr *ngFor="let song of displayedSongList; let i = index">
             <td>{{song.artist}}</td>
             <td>{{song.title}}</td>
-            <button type="submit" (click)="addToQueue(song.ID)">Add to queue</button>
+            <button type="submit" (click)="addToQueue(song.ID)" class="button-add">Add to queue</button>
           </tr>
         </table>
       </div>
-      <div>
-        <div class="pagination">
-          <a class="child" (click)="setVisibleSongs(pageNumbers[0])">{{pageNumbers[0]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[1])">{{pageNumbers[1]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[2])">{{pageNumbers[2]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[3])">{{pageNumbers[3]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[4])">{{pageNumbers[4]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[5])">{{pageNumbers[5]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[6])">{{pageNumbers[6]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[7])">{{pageNumbers[7]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[8])">{{pageNumbers[8]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[9])">{{pageNumbers[9]}}</a>
-          <a class="child" (click)="setVisibleSongs(pageNumbers[10])">{{pageNumbers[10]}}</a>
+      <div class="row">
+        <div class="col20"><p></p></div>
+        <div class="pagination col60" *ngIf="this.showPagination">
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[0]}"
+             (click)="showSongList(pageNumbers[0])">{{pageNumbers[0]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[1]}"
+             (click)="showSongList(pageNumbers[1])">{{pageNumbers[1]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[2]}"
+             (click)="showSongList(pageNumbers[2])">{{pageNumbers[2]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[3]}"
+             (click)="showSongList(pageNumbers[3])">{{pageNumbers[3]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[4]}"
+             (click)="showSongList(pageNumbers[4])">{{pageNumbers[4]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[5]}"
+             (click)="showSongList(pageNumbers[5])">{{pageNumbers[5]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[6]}"
+             (click)="showSongList(pageNumbers[6])">{{pageNumbers[6]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[7]}"
+             (click)="showSongList(pageNumbers[7])">{{pageNumbers[7]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[8]}"
+             (click)="showSongList(pageNumbers[8])">{{pageNumbers[8]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[9]}"
+             (click)="showSongList(pageNumbers[9])">{{pageNumbers[9]}}</a>
+          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[10]}"
+             (click)="showSongList(pageNumbers[10])">{{pageNumbers[10]}}</a>
         </div>
+        <div class="col20"><p></p></div>
       </div>
     </div>
     <div class="col10"><p></p></div>

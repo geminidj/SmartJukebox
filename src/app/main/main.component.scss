@@ -8,9 +8,48 @@
   float: left;
 }
 
+.col20 {
+  width: 20%;
+  float: left;
+}
+
+.col60 {
+  margin-top: 20px;
+  width: 60%;
+  float: left;
+}
+
 .col80 {
   width: 80%;
   float: left;
+}
+
+table {
+  width: 100%;
+}
+
+.table-artist {
+  width: 40%;
+}
+
+.table-title {
+  width: 40%;
+}
+
+.table-add {
+  width: 20%;
+}
+
+.button-add {
+  width: 100%;
+}
+
+th {
+  text-align: center;
+}
+
+td {
+  text-align: center;
 }
 
 .row:after {
@@ -21,10 +60,17 @@
 
 .pagination {
   display: inline-block;
+  width: 100%;
 }
 
 .child {
   display: inline-block;
+}
+
+.spacer {
+  float: left;
+  width: 10%;
+  background-color: red;
 }
 
 .pagination a {
@@ -33,6 +79,12 @@
   padding: 8px 16px;
   text-decoration: none;
   border: 1px solid #ddd; /* Gray */
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.pagination {
+  width: auto;
 }
 
 .pagination a.active {

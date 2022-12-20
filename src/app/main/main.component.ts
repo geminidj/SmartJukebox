@@ -10,6 +10,7 @@ import { Song } from '../song';
 })
 export class MainComponent {
   pageNumbers: number[] = [];
+  showPagination: boolean = true;
   queueList: Song[] = [];
 
   fullSongList: Song[] = [];
@@ -25,6 +26,7 @@ export class MainComponent {
   pageIndex: number = 1;
 
   numPages: number = 1;
+  searchTerm: string = '';
 
   constructor(private musicService: MusicService) {}
 
@@ -61,7 +63,7 @@ export class MainComponent {
     this.musicService.getNumSongs().subscribe((retrievedData: any) => {
       this.numSongs = retrievedData[0].count;
       this.numPages = Math.ceil(this.numSongs / this.songsPerPage);
-      this.setVisibleSongs();
+      this.showSongList();
     });
   }
 
@@ -69,9 +71,86 @@ export class MainComponent {
     this.musicService.addToQueue(songID);
   }
 
-  setVisibleSongs(pageIndex: number = 1) {
+  searchSongList() {
+    let newSongList: Song[] = [];
+
+    let searchTerm = this.searchTerm.toLowerCase();
+    let artist: string = '';
+    let title: string = '';
+
+    this.fullSongList.forEach((song) => {
+      artist = song.artist.toLowerCase();
+      title = song.title.toLowerCase();
+
+      if (artist.includes(searchTerm)) {
+        newSongList.push(song);
+      }
+
+      if (title.includes(searchTerm)) {
+        newSongList.push(song);
+      }
+    });
+
+    if (newSongList.length == 0) {
+      console.log('No songs found with that search term');
+    } else {
+      //songs found - do something
+      this.displayedSongList = newSongList;
+      this.showPagination = false;
+    }
+  }
+
+  resetSongList() {
+    this.displayedSongList = this.fullSongList;
+    this.showSongList();
+  }
+
+  showRandomSongs() {
+    let foundSong: Song | undefined;
+    let newSongList: Song[] = [];
+    let randomSongIDs: number[] = this.chooseRandomNumbers();
+
+    randomSongIDs.forEach((id: number) => {
+      foundSong = this.fullSongList.find((i) => i.ID === id);
+
+      if (foundSong) {
+        newSongList.push(foundSong);
+      }
+    });
+
+    this.displayedSongList = newSongList;
+    this.showPagination = false;
+  }
+
+  chooseRandomNumbers() {
+    let number: number = 0;
+    let numberList: number[] = [];
+
+    while (numberList.length < this.songsPerPage) {
+      number = this.getRandomNumber();
+      if (numberList.includes(number)) {
+        //number already in list, re-roll
+      } else {
+        numberList.push(number);
+      }
+    }
+    return numberList;
+  }
+
+  getRandomNumber() {
+    return Math.floor(Math.random() * this.numSongs);
+  }
+
+  showSongList(pageIndex: number = 1) {
     this.pageIndex = pageIndex;
     this.pageNumbers = this.setPageNumbers(this.pageIndex);
+    this.showPagination = true;
+
+    //using database indexes for this, might work for full song list
+    //for smaller song list, this is going to be broken as fuck
+    //use this.displayedSongList.length to work out the number of songs
+
+    //rewriting this is going to be a huge pain in the dick
 
     let minIndex = (this.pageIndex - 1) * this.songsPerPage + 1;
     let maxIndex = minIndex + this.songsPerPage - 1;
