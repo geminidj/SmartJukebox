@@ -46,6 +46,8 @@
       </form>
 
       <!--Browse section-->
+      <h1>Logged in as: {{userInfo?.info?.email}}</h1>
+
       <div>
         <table>
           <tr>
@@ -56,7 +58,9 @@
           <tr *ngFor="let song of displayedSongList; let i = index">
             <td>{{song.artist}}</td>
             <td>{{song.title}}</td>
-            <button type="submit" (click)="addToQueue(song.ID)" class="button-add">Add to queue</button>
+            <button type="submit" (click)="addToQueue(song.ID,this.userInfo?.info?.email)" class="button-add">Add to
+              queue
+            </button>
           </tr>
         </table>
       </div>

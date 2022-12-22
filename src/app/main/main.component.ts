@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MusicService } from '../services/music.service';
 import { Observable } from 'rxjs';
 import { Song } from '../song';
-import { GoogleApiService, UserInfo } from '../google-api.service';
+import { GoogleApiService, UserInfo } from '../services/google-api.service';
 
 @Component({
   selector: 'app-main',
@@ -44,10 +44,6 @@ export class MainComponent {
     return this.googleApi.isLoggedIn();
   }
 
-  logout() {
-    this.googleApi.signout();
-  }
-
   ngOnInit(): void {
     this.getAllData();
   }
@@ -85,8 +81,8 @@ export class MainComponent {
     });
   }
 
-  addToQueue(songID: number) {
-    this.musicService.addToQueue(songID);
+  addToQueue(songID: number, requester: string = 'Undefined Email') {
+    this.musicService.addToQueue(songID, requester);
   }
 
   searchSongList() {
@@ -110,7 +106,6 @@ export class MainComponent {
     });
 
     if (newSongList.length == 0) {
-      console.log('No songs found with that search term');
     } else {
       //songs found - do something
       this.displayedSongList = newSongList;

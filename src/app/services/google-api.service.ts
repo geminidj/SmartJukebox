@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Subject } from 'rxjs';
+import { UsersService } from './users.service';
 
 const oAuthConfig: AuthConfig = {
   issuer: 'https://accounts.google.com',
@@ -13,7 +14,6 @@ const oAuthConfig: AuthConfig = {
 
 export interface UserInfo {
   info: {
-    sub: string;
     email: string;
     given_name: string;
     picture: string;
@@ -26,7 +26,10 @@ export interface UserInfo {
 export class GoogleApiService {
   userProfileSubject = new Subject<UserInfo>();
 
-  constructor(private readonly oAuthService: OAuthService) {
+  constructor(
+    private readonly oAuthService: OAuthService,
+    private usersService: UsersService
+  ) {
     oAuthService.configure(oAuthConfig);
     oAuthService.loadDiscoveryDocument().then(() => {
       oAuthService.tryLoginImplicitFlow().then(() => {
@@ -35,10 +38,19 @@ export class GoogleApiService {
         } else {
           oAuthService.loadUserProfile().then((userProfile) => {
             this.userProfileSubject.next(userProfile as UserInfo);
+            this.sendToLocalAPI(userProfile as UserInfo);
           });
         }
       });
     });
+  }
+
+  sendToLocalAPI(userInfo: UserInfo) {
+    this.usersService.addUser(
+      userInfo.info.email,
+      userInfo.info.given_name,
+      userInfo.info.picture
+    );
   }
 
   isLoggedIn(): boolean {

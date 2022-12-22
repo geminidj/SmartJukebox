@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GoogleApiService, UserInfo } from '../google-api.service';
+import { GoogleApiService, UserInfo } from '../services/google-api.service';
 
 @Component({
   selector: 'app-header',
@@ -13,5 +13,10 @@ export class HeaderComponent {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
     });
+  }
+
+  logout() {
+    this.googleApi.signout();
+    window.location.reload();
   }
 }

@@ -42,12 +42,9 @@ export class MusicService {
     );
   }
 
-  addToQueue(songID: number): Subscription {
-    console.log('musicservice - add called');
-    console.log('Song database ID: ' + songID);
-
+  addToQueue(songID: number, requester: string): Subscription {
     const payload = new HttpParams()
-      .set('username', this.username)
+      .set('username', requester)
       .set('userIP', this.userIP)
       .set('message', this.message)
       .set('songID', songID);

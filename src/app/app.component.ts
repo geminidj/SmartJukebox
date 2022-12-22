@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GoogleApiService } from './google-api.service';
+import { GoogleApiService } from './services/google-api.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +8,4 @@ import { GoogleApiService } from './google-api.service';
 })
 export class AppComponent {
   title = 'SmartJukebox';
-
-  constructor(private readonly googleApi: GoogleApiService) {}
 }
