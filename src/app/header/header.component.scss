@@ -1,11 +1,28 @@
-.logo{
+.logo {
   display: block;
-  max-width:18%;
+  max-width: 18%;
   width: auto;
   height: auto;
   background-color: black;
 }
 
-.header{
+.user-info {
+  color: white;
+}
+
+.row {
+  display: flex;
+}
+
+.col {
+  float: left;
+}
+
+.col-right {
+  float: right;
+}
+
+.header {
   background-color: black;
+  display: flex;
 }

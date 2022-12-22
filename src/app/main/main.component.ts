@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MusicService } from '../services/music.service';
 import { Observable } from 'rxjs';
 import { Song } from '../song';
+import { GoogleApiService, UserInfo } from '../google-api.service';
 
 @Component({
   selector: 'app-main',
@@ -28,7 +29,24 @@ export class MainComponent {
   numPages: number = 1;
   searchTerm: string = '';
 
-  constructor(private musicService: MusicService) {}
+  userInfo?: UserInfo;
+
+  constructor(
+    private musicService: MusicService,
+    private readonly googleApi: GoogleApiService
+  ) {
+    googleApi.userProfileSubject.subscribe((info) => {
+      this.userInfo = info;
+    });
+  }
+
+  isLoggedIn(): boolean {
+    return this.googleApi.isLoggedIn();
+  }
+
+  logout() {
+    this.googleApi.signout();
+  }
 
   ngOnInit(): void {
     this.getAllData();
