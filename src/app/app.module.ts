@@ -11,6 +11,7 @@ import { SongitemComponent } from './songitem/songitem.component';
 import { MainComponent } from './main/main.component';
 import { GenericpanelComponent } from './genericpanel/genericpanel.component';
 import { FormsModule } from '@angular/forms';
+import { UserRequestInformationComponent } from './user-request-information/user-request-information.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { FormsModule } from '@angular/forms';
     SongitemComponent,
     MainComponent,
     GenericpanelComponent,
+    UserRequestInformationComponent,
   ],
   imports: [
     BrowserModule,

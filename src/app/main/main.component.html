@@ -13,6 +13,15 @@
 <div class="panel">
   <div class="row">
     <div class="col10"><p></p></div>
+    <app-user-request-information [totalDailySongs]="totalDailySongs"
+                                  [userEmail]="userInfo?.info?.email"></app-user-request-information>
+    <div class="col10"><p></p></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="row">
+    <div class="col10"><p></p></div>
     <div class="col80">
       <h1>Current queue</h1>
       <div class="songlist">
@@ -46,8 +55,6 @@
       </form>
 
       <!--Browse section-->
-      <h1>Logged in as: {{userInfo?.info?.email}}</h1>
-
       <div>
         <table>
           <tr>
