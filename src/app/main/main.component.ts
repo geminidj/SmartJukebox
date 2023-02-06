@@ -20,8 +20,6 @@ export class MainComponent {
 
   displayedSongList: Song[] = [];
 
-  totalDailySongs: number = 50;
-
   songsPerPage: number = 30;
 
   numSongs: number = 0;
