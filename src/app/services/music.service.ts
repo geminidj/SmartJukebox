@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
 import { Song } from '../song';
 import {} from '../user-request-information/user-request-information.component';
+import { SocketioService } from './socketio.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,10 @@ export class MusicService {
     }),
   };
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private httpClient: HttpClient,
+    private socketIO: SocketioService
+  ) {}
 
   getQueue(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
@@ -56,6 +60,10 @@ export class MusicService {
         payload.toString(),
         this.httpPostOptions
       )
-      .subscribe((v) => console.info(v));
+      .subscribe((v) => {
+        console.log(v);
+        //use websocket to call update (if 200)
+        this.socketIO.triggerGlobalQueueUpdate();
+      });
   }
 }

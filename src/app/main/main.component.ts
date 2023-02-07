@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MusicService } from '../services/music.service';
-import { Observable } from 'rxjs';
 import { Song } from '../song';
 import { GoogleApiService, UserInfo } from '../services/google-api.service';
 
