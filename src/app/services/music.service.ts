@@ -62,8 +62,6 @@ export class MusicService {
       )
       .subscribe((v) => {
         console.log(v);
-        //use websocket to call update (if 200)
-        this.socketIO.triggerGlobalQueueUpdate();
       });
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
-import { MainComponent } from '../main/main.component';
 
 export const environment = {
   production: false,
@@ -10,38 +9,48 @@ export const environment = {
   providedIn: 'root',
 })
 export class SocketioService {
-  public socket: any;
+  private socket: any;
+  private nowPlayingUpdateFlag: boolean = false;
 
-  private mailWaiting: boolean = false;
+  private beingProcessed: number[] = [];
 
   constructor() {}
 
   setupSocketConnection() {
     this.socket = io(environment.SOCKET_ENDPOINT);
 
-    this.socket.on('broadcast queue update', () => {
-      this.mailWaiting = true;
-    });
-
     this.socket.on('broadcast nowplaying update', () => {
       //trigger the main.component.ts to update the now playing song
     });
 
-    this.socket.on('lower the flag', () => {
-      this.mailWaiting = false;
+    this.socket.on('song lookout', (message: number) => {
+      this.beingProcessed.push(message);
+    });
+
+    this.socket.on('update nowplaying', () => {
+      this.nowPlayingUpdateFlag = true;
     });
   }
 
-  checkMailbox() {
-    return this.mailWaiting;
+  getProcessList() {
+    return this.beingProcessed;
   }
 
-  resetMailFlag() {
-    this.socket.emit('lower the flag', 'lower the flag');
+  removeFromList(songID: number) {
+    let index = this.beingProcessed.lastIndexOf(songID);
+    this.beingProcessed.splice(index, 1);
   }
 
-  triggerGlobalQueueUpdate() {
-    this.socket.emit('trigger queue update', 'Update the queue');
+  newSong(songID: number) {
+    this.socket.emit('new song', songID);
+  }
+
+  getNowPlayingFlagStatus() {
+    return this.nowPlayingUpdateFlag;
+  }
+
+  resetNowPlayingFlag() {
+    this.nowPlayingUpdateFlag = false;
   }
 
   disconnect() {

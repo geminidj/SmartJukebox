@@ -52,14 +52,26 @@ export class MainComponent {
 
   ngOnInit(): void {
     this.getAllData();
+
     this.oneSecondTimer = timer(0, 1000)
       .pipe(
         map(() => {
-          if (this.socketIO.checkMailbox()) {
+          let processList = this.socketIO.getProcessList();
+
+          if (this.socketIO.getNowPlayingFlagStatus()) {
+            this.getNowPlaying();
+            this.socketIO.resetNowPlayingFlag();
+          }
+
+          if (processList.length > 0) {
             this.getSongQueue();
-            for (let song of this.queueList) {
-              if (song.songID === this.lastRequest) {
-                this.socketIO.resetMailFlag();
+            for (let Song of this.queueList) {
+              for (let i = 0; i < processList.length; i++) {
+                if (Song.songID === processList[i]) {
+                  //Song in queue matches a song on the process list
+                  //Remove it from the process list
+                  this.socketIO.removeFromList(Song.songID);
+                }
               }
             }
           }
@@ -107,6 +119,7 @@ export class MainComponent {
 
   addToQueue(songID: number, requester: string = 'Undefined Email') {
     this.lastRequest = songID;
+    this.socketIO.newSong(songID);
     this.musicService.addToQueue(songID, requester);
     this.musicService.getQueue().subscribe((results: Song[]) => {});
   }
