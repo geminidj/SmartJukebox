@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MusicService } from '../services/music.service';
 import { Song } from '../song';
 import { GoogleApiService, UserInfo } from '../services/google-api.service';
+import { SocketioService } from '../services/socketio.service';
+import { map, Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -9,6 +11,8 @@ import { GoogleApiService, UserInfo } from '../services/google-api.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent {
+  oneSecondTimer: Subscription | undefined;
+
   pageNumbers: number[] = [];
   showPagination: boolean = true;
   queueList: Song[] = [];
@@ -25,6 +29,8 @@ export class MainComponent {
 
   pageIndex: number = 1;
 
+  lastRequest: number = 0;
+
   numPages: number = 1;
   searchTerm: string = '';
 
@@ -32,7 +38,8 @@ export class MainComponent {
 
   constructor(
     private musicService: MusicService,
-    private readonly googleApi: GoogleApiService
+    private readonly googleApi: GoogleApiService,
+    private socketIO: SocketioService
   ) {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
@@ -45,6 +52,24 @@ export class MainComponent {
 
   ngOnInit(): void {
     this.getAllData();
+    this.oneSecondTimer = timer(0, 1000)
+      .pipe(
+        map(() => {
+          if (this.socketIO.checkMailbox()) {
+            this.getSongQueue();
+            for (let song of this.queueList) {
+              if (song.songID === this.lastRequest) {
+                this.socketIO.resetMailFlag();
+              }
+            }
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.oneSecondTimer!.unsubscribe();
   }
 
   getAllData() {
@@ -81,7 +106,9 @@ export class MainComponent {
   }
 
   addToQueue(songID: number, requester: string = 'Undefined Email') {
+    this.lastRequest = songID;
     this.musicService.addToQueue(songID, requester);
+    this.musicService.getQueue().subscribe((results: Song[]) => {});
   }
 
   searchSongList() {

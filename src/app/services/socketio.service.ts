@@ -10,7 +10,9 @@ export const environment = {
   providedIn: 'root',
 })
 export class SocketioService {
-  socket: any;
+  public socket: any;
+
+  private mailWaiting: boolean = false;
 
   constructor() {}
 
@@ -18,13 +20,24 @@ export class SocketioService {
     this.socket = io(environment.SOCKET_ENDPOINT);
 
     this.socket.on('broadcast queue update', () => {
-      console.log('Someone added something to the queue - Update the queue');
-      //trigger the main.component.ts to update the queue
+      this.mailWaiting = true;
     });
 
     this.socket.on('broadcast nowplaying update', () => {
       //trigger the main.component.ts to update the now playing song
     });
+
+    this.socket.on('lower the flag', () => {
+      this.mailWaiting = false;
+    });
+  }
+
+  checkMailbox() {
+    return this.mailWaiting;
+  }
+
+  resetMailFlag() {
+    this.socket.emit('lower the flag', 'lower the flag');
   }
 
   triggerGlobalQueueUpdate() {
