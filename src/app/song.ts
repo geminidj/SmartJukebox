@@ -4,4 +4,6 @@ export class Song {
   artist: string = '';
   title: string = '';
   ID: number = 0;
+
+  ETA: string = Date.prototype.toString();
 }

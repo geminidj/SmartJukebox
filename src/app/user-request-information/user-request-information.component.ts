@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { MusicService } from '../services/music.service';
 import { UsersService } from '../services/users.service';
 import { Song } from '../song';
-import { Observable } from 'rxjs';
+import { map, Observable, Subscription, timer } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { GoogleApiService, UserInfo } from '../services/google-api.service';
+import { SocketioService } from '../services/socketio.service';
 
 @Component({
   selector: 'app-user-request-information',
@@ -20,6 +21,8 @@ export class UserRequestInformationComponent {
 
   @Input() userEmail: string | undefined;
 
+  oneSecondTimer: Subscription | undefined;
+
   userInfo?: UserInfo;
 
   totalDailySongs: number = 0;
@@ -29,11 +32,22 @@ export class UserRequestInformationComponent {
     private musicService: MusicService,
     private userService: UsersService,
     private httpClient: HttpClient,
-    private readonly googleApi: GoogleApiService
+    private readonly googleApi: GoogleApiService,
+    private socketIO: SocketioService
   ) {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
-      this.getTodayPlayCount(info.info.email);
+
+      this.oneSecondTimer = timer(0, 1000)
+        .pipe(
+          map(() => {
+            if (this.socketIO.getPlaycountFlagStatus()) {
+              this.getTodayPlayCount(this.userInfo!.info.email);
+              this.socketIO.resetPlaycountFlag();
+            }
+          })
+        )
+        .subscribe();
     });
   }
 

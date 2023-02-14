@@ -12,6 +12,7 @@ import { MainComponent } from './main/main.component';
 import { GenericpanelComponent } from './genericpanel/genericpanel.component';
 import { FormsModule } from '@angular/forms';
 import { UserRequestInformationComponent } from './user-request-information/user-request-information.component';
+import { SocketioService } from './services/socketio.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { UserRequestInformationComponent } from './user-request-information/user
     FormsModule,
     OAuthModule.forRoot(),
   ],
-  providers: [],
+  providers: [SocketioService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

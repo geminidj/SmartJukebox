@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { MusicService } from '../services/music.service';
-import { Observable } from 'rxjs';
 import { Song } from '../song';
 import { GoogleApiService, UserInfo } from '../services/google-api.service';
+import { SocketioService } from '../services/socketio.service';
+import { map, Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -10,6 +11,8 @@ import { GoogleApiService, UserInfo } from '../services/google-api.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent {
+  oneSecondTimer: Subscription | undefined;
+
   pageNumbers: number[] = [];
   showPagination: boolean = true;
   queueList: Song[] = [];
@@ -26,14 +29,19 @@ export class MainComponent {
 
   pageIndex: number = 1;
 
+  lastRequest: number = 0;
+
   numPages: number = 1;
   searchTerm: string = '';
 
   userInfo?: UserInfo;
 
+  nextSongETA: Date = new Date();
+
   constructor(
     private musicService: MusicService,
-    private readonly googleApi: GoogleApiService
+    private readonly googleApi: GoogleApiService,
+    private socketIO: SocketioService
   ) {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
@@ -46,6 +54,38 @@ export class MainComponent {
 
   ngOnInit(): void {
     this.getAllData();
+
+    this.oneSecondTimer = timer(0, 1000)
+      .pipe(
+        map(() => {
+          let processList = this.socketIO.getProcessList();
+
+          //Check if new nowplaying section is required
+          if (this.nextSongETA < new Date()) {
+            this.getSongQueue();
+            this.getNowPlaying();
+          }
+
+          //Check if there are any songs being processed (requested, but not in queue yet)
+          if (processList.length > 0) {
+            this.getSongQueue();
+            for (let Song of this.queueList) {
+              for (let i = 0; i < processList.length; i++) {
+                if (Song.songID === processList[i]) {
+                  //Song in queue matches a song on the process list
+                  //Remove it from the process list
+                  this.socketIO.removeFromList(Song.songID);
+                }
+              }
+            }
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.oneSecondTimer!.unsubscribe();
   }
 
   getAllData() {
@@ -62,9 +102,10 @@ export class MainComponent {
   }
 
   getSongQueue() {
-    this.musicService
-      .getQueue()
-      .subscribe((retrievedData: Song[]) => (this.queueList = retrievedData));
+    this.musicService.getQueue().subscribe((retrievedData: Song[]) => {
+      this.queueList = retrievedData;
+      this.nextSongETA = new Date(retrievedData[0].ETA);
+    });
   }
 
   getNowPlaying() {
@@ -82,7 +123,11 @@ export class MainComponent {
   }
 
   addToQueue(songID: number, requester: string = 'Undefined Email') {
+    this.lastRequest = songID;
+    this.socketIO.newSong(songID);
+    this.socketIO.addRequestCount(requester);
     this.musicService.addToQueue(songID, requester);
+    this.musicService.getQueue().subscribe();
   }
 
   searchSongList() {
