@@ -62,16 +62,11 @@ export class MainComponent {
           let processList = this.socketIO.getProcessList();
 
           //Check if new nowplaying section is required
-          console.log('next song ETA poll count: ' + this.ETAPollCount);
-          console.log('static ETA:   ' + this.nextSongETA);
-          console.log('current time: ' + new Date());
+
           if (this.nextSongETA < new Date() && this.ETAPollCount < 10) {
-            console.log('TRIGGER');
             let oldcount = this.ETAPollCount;
             this.ETAPollCount++;
-            console.log(
-              'oldcount: ' + oldcount + ' - newcount: ' + this.ETAPollCount
-            );
+
             this.getSongQueue();
             this.getNowPlaying();
           }
