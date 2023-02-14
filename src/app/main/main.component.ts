@@ -11,6 +11,7 @@ import { map, Subscription, timer } from 'rxjs';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent {
+  private readonly pollTimeout = 10; //Time in seconds before mySQL polling stops
   oneSecondTimer: Subscription | undefined;
 
   pageNumbers: number[] = [];
@@ -25,6 +26,8 @@ export class MainComponent {
 
   songsPerPage: number = 30;
 
+  oldQueueLength: number = 0;
+
   numSongs: number = 0;
 
   pageIndex: number = 1;
@@ -38,6 +41,8 @@ export class MainComponent {
 
   nextSongETA: Date = new Date();
   ETAPollCount: number = 0;
+
+  playbackPaused: boolean = false;
 
   constructor(
     private musicService: MusicService,
@@ -61,12 +66,21 @@ export class MainComponent {
         map(() => {
           let processList = this.socketIO.getProcessList();
 
+          this.oldQueueLength = this.queueList.length;
+
+          //Set boolean for alert if playback is paused
+          if (this.ETAPollCount >= this.pollTimeout) {
+            this.playbackPaused = true;
+          } else {
+            this.playbackPaused = false;
+          }
+
           //Check if new nowplaying section is required
-
-          if (this.nextSongETA < new Date() && this.ETAPollCount < 10) {
-            let oldcount = this.ETAPollCount;
+          if (
+            this.nextSongETA < new Date() &&
+            this.ETAPollCount < this.pollTimeout
+          ) {
             this.ETAPollCount++;
-
             this.getSongQueue();
             this.getNowPlaying();
           }
@@ -83,6 +97,11 @@ export class MainComponent {
                 }
               }
             }
+          }
+
+          if (this.oldQueueLength < this.queueList.length) {
+            //queue length is shorter than before - playback resumed
+            this.playbackPaused = false;
           }
         })
       )

@@ -13,6 +13,7 @@ import { GenericpanelComponent } from './genericpanel/genericpanel.component';
 import { FormsModule } from '@angular/forms';
 import { UserRequestInformationComponent } from './user-request-information/user-request-information.component';
 import { SocketioService } from './services/socketio.service';
+import { PlaybackwarningComponent } from './playbackwarning/playbackwarning.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { SocketioService } from './services/socketio.service';
     MainComponent,
     GenericpanelComponent,
     UserRequestInformationComponent,
+    PlaybackwarningComponent,
   ],
   imports: [
     BrowserModule,
