@@ -37,6 +37,7 @@ export class MainComponent {
   userInfo?: UserInfo;
 
   nextSongETA: Date = new Date();
+  ETAPollCount: number = 0;
 
   constructor(
     private musicService: MusicService,
@@ -61,7 +62,16 @@ export class MainComponent {
           let processList = this.socketIO.getProcessList();
 
           //Check if new nowplaying section is required
-          if (this.nextSongETA < new Date()) {
+          console.log('next song ETA poll count: ' + this.ETAPollCount);
+          console.log('static ETA:   ' + this.nextSongETA);
+          console.log('current time: ' + new Date());
+          if (this.nextSongETA < new Date() && this.ETAPollCount < 10) {
+            console.log('TRIGGER');
+            let oldcount = this.ETAPollCount;
+            this.ETAPollCount++;
+            console.log(
+              'oldcount: ' + oldcount + ' - newcount: ' + this.ETAPollCount
+            );
             this.getSongQueue();
             this.getNowPlaying();
           }
@@ -109,9 +119,13 @@ export class MainComponent {
   }
 
   getNowPlaying() {
-    this.musicService
-      .getNowPlaying()
-      .subscribe((retrievedData: Song[]) => (this.nowPlaying = retrievedData));
+    this.musicService.getNowPlaying().subscribe((retrievedData: Song[]) => {
+      if (this.nowPlaying === retrievedData) {
+        this.ETAPollCount = 0;
+      } else {
+        this.nowPlaying = retrievedData;
+      }
+    });
   }
 
   getNumSongs() {
@@ -128,6 +142,7 @@ export class MainComponent {
     this.socketIO.addRequestCount(requester);
     this.musicService.addToQueue(songID, requester);
     this.musicService.getQueue().subscribe();
+    this.ETAPollCount = 0;
   }
 
   searchSongList() {
