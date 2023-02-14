@@ -103,6 +103,16 @@ export class MainComponent {
             //queue length is shorter than before - playback resumed
             this.playbackPaused = false;
           }
+
+          //Disable songs in the queue
+          for (let Song of this.fullSongList) {
+            for (let Song2 of this.queueList) {
+              if (Song.artist === Song2.artist && Song.title === Song2.title) {
+                //Duplicate song found in queue
+                Song.soft_enabled = false;
+              }
+            }
+          }
         })
       )
       .subscribe();
@@ -118,10 +128,30 @@ export class MainComponent {
     this.getFullSongList();
   }
 
+  getEnableTime(date: string): Date {
+    let thedate = new Date(date);
+    thedate.setHours(thedate.getHours() + 6);
+    return thedate;
+  }
+
   getFullSongList() {
     this.musicService.getFullSongList().subscribe((retrievedData: Song[]) => {
       this.fullSongList = retrievedData;
       this.getNumSongs();
+
+      for (let Song of this.fullSongList) {
+        //test if song should be enabled or not
+        if (!Song.soft_enabled) {
+          let enableTime = this.getEnableTime(Song.date_played);
+
+          //KEYWORD - I suspect this is still wrong
+          //If .date_played is ages ago, enableTime may still be before, and it is immediately reset.
+
+          if (new Date() >= enableTime) {
+            this.musicService.enableSong(Song.ID);
+          }
+        }
+      }
     });
   }
 
@@ -180,13 +210,13 @@ export class MainComponent {
     });
 
     if (newSongList.length == 0) {
+      //No songs found - display an error message
     } else {
       //songs found - do something
       this.displayedSongList = newSongList;
       this.showPagination = false;
     }
   }
-
   resetSongList() {
     this.displayedSongList = this.fullSongList;
     this.showSongList();

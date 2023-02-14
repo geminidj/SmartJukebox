@@ -8,6 +8,7 @@ import { SocketioService } from './socketio.service';
   providedIn: 'root',
 })
 export class MusicService {
+  enablePassword: string = '4HgghP03Qau4lcbcxZ5p60zWjRjc';
   username: string = 'default';
   userIP: string = '192.168.1.2';
   message: string = 'default-blank';
@@ -43,6 +44,19 @@ export class MusicService {
     return this.httpClient.get<number>(
       'http://localhost:8080/getnumberofsongs'
     );
+  }
+
+  enableSong(songID: number): Subscription {
+    const payload = new HttpParams()
+      .set('songid', songID)
+      .set('password', this.enablePassword);
+    return this.httpClient
+      .post(
+        'http://localhost:8080/enablesong',
+        payload.toString(),
+        this.httpPostOptions
+      )
+      .subscribe();
   }
 
   addToQueue(songID: number, requester: string): Subscription {
