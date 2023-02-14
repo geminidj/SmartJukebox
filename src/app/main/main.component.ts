@@ -36,6 +36,8 @@ export class MainComponent {
 
   userInfo?: UserInfo;
 
+  nextSongETA: Date = new Date();
+
   constructor(
     private musicService: MusicService,
     private readonly googleApi: GoogleApiService,
@@ -58,11 +60,13 @@ export class MainComponent {
         map(() => {
           let processList = this.socketIO.getProcessList();
 
-          if (this.socketIO.getNowPlayingFlagStatus()) {
+          //Check if new nowplaying section is required
+          if (this.nextSongETA < new Date()) {
+            this.getSongQueue();
             this.getNowPlaying();
-            this.socketIO.resetNowPlayingFlag();
           }
 
+          //Check if there are any songs being processed (requested, but not in queue yet)
           if (processList.length > 0) {
             this.getSongQueue();
             for (let Song of this.queueList) {
@@ -98,9 +102,10 @@ export class MainComponent {
   }
 
   getSongQueue() {
-    this.musicService
-      .getQueue()
-      .subscribe((retrievedData: Song[]) => (this.queueList = retrievedData));
+    this.musicService.getQueue().subscribe((retrievedData: Song[]) => {
+      this.queueList = retrievedData;
+      this.nextSongETA = new Date(retrievedData[0].ETA);
+    });
   }
 
   getNowPlaying() {
@@ -120,8 +125,9 @@ export class MainComponent {
   addToQueue(songID: number, requester: string = 'Undefined Email') {
     this.lastRequest = songID;
     this.socketIO.newSong(songID);
+    this.socketIO.addRequestCount(requester);
     this.musicService.addToQueue(songID, requester);
-    this.musicService.getQueue().subscribe((results: Song[]) => {});
+    this.musicService.getQueue().subscribe();
   }
 
   searchSongList() {

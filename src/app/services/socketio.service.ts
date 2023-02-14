@@ -11,6 +11,7 @@ export const environment = {
 export class SocketioService {
   private socket: any;
   private nowPlayingUpdateFlag: boolean = false;
+  private playcountUpdateFlag: boolean = true;
 
   private beingProcessed: number[] = [];
 
@@ -23,12 +24,16 @@ export class SocketioService {
       //trigger the main.component.ts to update the now playing song
     });
 
-    this.socket.on('song lookout', (message: number) => {
-      this.beingProcessed.push(message);
+    this.socket.on('song lookout', (songID: number) => {
+      this.beingProcessed.push(songID);
     });
 
     this.socket.on('update nowplaying', () => {
       this.nowPlayingUpdateFlag = true;
+    });
+
+    this.socket.on('update playcount', () => {
+      this.playcountUpdateFlag = true;
     });
   }
 
@@ -45,12 +50,16 @@ export class SocketioService {
     this.socket.emit('new song', songID);
   }
 
-  getNowPlayingFlagStatus() {
-    return this.nowPlayingUpdateFlag;
+  addRequestCount(email: string) {
+    this.socket.emit('update playcount', email);
   }
 
-  resetNowPlayingFlag() {
-    this.nowPlayingUpdateFlag = false;
+  getPlaycountFlagStatus() {
+    return this.playcountUpdateFlag;
+  }
+
+  resetPlaycountFlag() {
+    this.playcountUpdateFlag = false;
   }
 
   disconnect() {
