@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { UserRequestInformationComponent } from './user-request-information/user-request-information.component';
 import { SocketioService } from './services/socketio.service';
 import { PlaybackwarningComponent } from './playbackwarning/playbackwarning.component';
+import { CooldowntimerComponent } from './cooldowntimer/cooldowntimer.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { PlaybackwarningComponent } from './playbackwarning/playbackwarning.comp
     GenericpanelComponent,
     UserRequestInformationComponent,
     PlaybackwarningComponent,
+    CooldowntimerComponent,
   ],
   imports: [
     BrowserModule,

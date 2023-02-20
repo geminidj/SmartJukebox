@@ -13,6 +13,10 @@ export class SocketioService {
   private nowPlayingUpdateFlag: boolean = false;
   private playcountUpdateFlag: boolean = true;
 
+  private queueUpdateFlag: boolean = false;
+
+  private cooldownEmails: string[] = [];
+
   private beingProcessed: number[] = [];
 
   constructor() {}
@@ -28,13 +32,41 @@ export class SocketioService {
       this.beingProcessed.push(songID);
     });
 
+    this.socket.on('update cooldown', (email: string) => {
+      this.cooldownEmails.push(email);
+    });
+
     this.socket.on('update nowplaying', () => {
       this.nowPlayingUpdateFlag = true;
+    });
+
+    this.socket.on('update queue', () => {
+      this.queueUpdateFlag = true;
     });
 
     this.socket.on('update playcount', () => {
       this.playcountUpdateFlag = true;
     });
+  }
+
+  getCooldownEmails() {
+    return this.cooldownEmails;
+  }
+
+  resetCooldownEmails() {
+    this.cooldownEmails = [];
+  }
+
+  getUpdateQueueFlag() {
+    let result = this.queueUpdateFlag;
+    this.queueUpdateFlag = false;
+    return result;
+  }
+
+  getUpdateNowPlayingFlag() {
+    let result = this.nowPlayingUpdateFlag;
+    this.nowPlayingUpdateFlag = false;
+    return result;
   }
 
   getProcessList() {

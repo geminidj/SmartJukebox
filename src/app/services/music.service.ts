@@ -13,16 +13,31 @@ export class MusicService {
   userIP: string = '192.168.1.2';
   message: string = 'default-blank';
 
+  reenableUserTime: Date = new Date();
+
   httpPostOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     }),
   };
 
-  constructor(
-    private httpClient: HttpClient,
-    private socketIO: SocketioService
-  ) {}
+  constructor(private httpClient: HttpClient) {}
+
+  getCooldown(email: string | undefined): Observable<any> {
+    if (!email) {
+      email = 'greg@greghanson.co.uk';
+    }
+
+    console.log('getCooldown called');
+    console.log('email: ' + email);
+
+    const payload = new HttpParams().set('email', email);
+    return this.httpClient.post(
+      'http://localhost:8080/getcooldown',
+      payload.toString(),
+      this.httpPostOptions
+    );
+  }
 
   getQueue(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)

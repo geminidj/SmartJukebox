@@ -11,8 +11,9 @@ import { map, Subscription, timer } from 'rxjs';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent {
-  private readonly pollTimeout = 10; //Time in seconds before mySQL polling stops
   oneSecondTimer: Subscription | undefined;
+
+  userInCooldown: boolean = true;
 
   pageNumbers: number[] = [];
   showPagination: boolean = true;
@@ -23,6 +24,7 @@ export class MainComponent {
   nowPlaying: Song[] = [];
 
   displayedSongList: Song[] = [];
+  cooldownUntil: Date = new Date();
 
   songsPerPage: number = 30;
 
@@ -39,6 +41,8 @@ export class MainComponent {
 
   userInfo?: UserInfo;
 
+  fastCooldown: boolean = false;
+
   nextSongETA: Date = new Date();
   ETAPollCount: number = 0;
 
@@ -51,6 +55,7 @@ export class MainComponent {
   ) {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
+      this.getAllData();
     });
   }
 
@@ -59,30 +64,34 @@ export class MainComponent {
   }
 
   ngOnInit(): void {
-    this.getAllData();
-
     this.oneSecondTimer = timer(0, 1000)
       .pipe(
         map(() => {
           let processList = this.socketIO.getProcessList();
+          let cooldownIndex = this.socketIO
+            .getCooldownEmails()
+            .indexOf(<string>this.userInfo?.info.email);
+
+          if (cooldownIndex > -1) {
+            //users email is in cooldown
+            this.getCooldownTimer();
+            this.socketIO.resetCooldownEmails();
+          }
+
+          console.log('fastCooldown: ' + this.fastCooldown);
+          if (!this.fastCooldown) {
+            console.log('setting cooldown status');
+            this.setCooldownStatus();
+          }
 
           this.oldQueueLength = this.queueList.length;
 
-          //Set boolean for alert if playback is paused
-          if (this.ETAPollCount >= this.pollTimeout) {
-            this.playbackPaused = true;
-          } else {
-            this.playbackPaused = false;
+          if (this.socketIO.getUpdateNowPlayingFlag()) {
+            this.getNowPlaying();
           }
 
-          //Check if new nowplaying section is required
-          if (
-            this.nextSongETA < new Date() &&
-            this.ETAPollCount < this.pollTimeout
-          ) {
-            this.ETAPollCount++;
+          if (this.socketIO.getUpdateQueueFlag()) {
             this.getSongQueue();
-            this.getNowPlaying();
           }
 
           //Check if there are any songs being processed (requested, but not in queue yet)
@@ -99,11 +108,6 @@ export class MainComponent {
             }
           }
 
-          if (this.oldQueueLength < this.queueList.length) {
-            //queue length is shorter than before - playback resumed
-            this.playbackPaused = false;
-          }
-
           //Disable songs in the queue
           for (let Song of this.fullSongList) {
             for (let Song2 of this.queueList) {
@@ -118,6 +122,25 @@ export class MainComponent {
       .subscribe();
   }
 
+  setCooldownStatus() {
+    if (new Date() < this.cooldownUntil) {
+      //user is in cooldown
+      this.userInCooldown = true;
+      this.disableButtons();
+    } else {
+      this.userInCooldown = false;
+      this.resetButtons();
+    }
+  }
+  disableButtons() {
+    for (let song of this.displayedSongList) {
+      song.soft_enabled = false;
+    }
+  }
+  resetButtons() {
+    this.resetSongList();
+  }
+
   ngOnDestroy(): void {
     this.oneSecondTimer!.unsubscribe();
   }
@@ -126,6 +149,15 @@ export class MainComponent {
     this.getSongQueue();
     this.getNowPlaying();
     this.getFullSongList();
+    this.getCooldownTimer();
+  }
+
+  getCooldownTimer() {
+    this.musicService
+      .getCooldown(this.userInfo?.info.email)
+      .subscribe((retrievedData) => {
+        this.cooldownUntil = new Date(retrievedData[0].reenableUser);
+      });
   }
 
   getEnableTime(date: string): Date {
@@ -180,7 +212,17 @@ export class MainComponent {
     });
   }
 
+  resetFastCooldown() {
+    this.fastCooldown = false;
+  }
+
   addToQueue(songID: number, requester: string = 'Undefined Email') {
+    this.fastCooldown = true;
+    setTimeout(() => {
+      this.resetFastCooldown();
+    }, 10000);
+    this.disableButtons();
+    this.userInCooldown = true;
     this.lastRequest = songID;
     this.socketIO.newSong(songID);
     this.socketIO.addRequestCount(requester);
