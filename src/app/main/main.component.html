@@ -20,6 +20,16 @@
   </div>
 </div>
 
+<div class="warning-panel" *ngIf="userInCooldown">
+  <div class="row">
+    <div class="col10"><p></p></div>
+    <div class="col80">
+      <h3>You are in cooldown.</h3>
+    </div>
+    <div class="col10"><p></p></div>
+  </div>
+</div>
+
 <div class="panel">
   <div class="row">
     <div class="col10"><p></p></div>
@@ -74,9 +84,10 @@
           <tr *ngFor="let song of displayedSongList; let i = index">
             <td>{{song.artist}}</td>
             <td>{{song.title}}</td>
-            <button type="submit" (click)="addToQueue(song.ID,this.userInfo?.info?.email)" class="button-add">Add to
-              queue
+            <button type="submit" (click)="addToQueue(song.ID,this.userInfo?.info?.email)" [disabled]="!song.soft_enabled" [ngClass]="{tooltip:!song.soft_enabled}" class="button-add">Add to
+              queue <span *ngIf="!song.soft_enabled" class="tooltiptext">This song is unavailable. You might be on cooldown, it might already be in the queue, or have been played recently.</span>
             </button>
+
           </tr>
         </table>
       </div>

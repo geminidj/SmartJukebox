@@ -11,18 +11,21 @@ import { map, Subscription, timer } from 'rxjs';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent {
-  private readonly pollTimeout = 10; //Time in seconds before mySQL polling stops
   oneSecondTimer: Subscription | undefined;
+
+  userInCooldown: boolean = true;
 
   pageNumbers: number[] = [];
   showPagination: boolean = true;
   queueList: Song[] = [];
 
   fullSongList: Song[] = [];
+  backupSongList: Song[] = [];
 
   nowPlaying: Song[] = [];
 
   displayedSongList: Song[] = [];
+  cooldownUntil: Date = new Date();
 
   songsPerPage: number = 30;
 
@@ -38,6 +41,9 @@ export class MainComponent {
   searchTerm: string = '';
 
   userInfo?: UserInfo;
+  songsBeenReset: boolean = false;
+
+  fastCooldown: boolean = false;
 
   nextSongETA: Date = new Date();
   ETAPollCount: number = 0;
@@ -51,6 +57,7 @@ export class MainComponent {
   ) {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
+      this.getAllData();
     });
   }
 
@@ -59,30 +66,42 @@ export class MainComponent {
   }
 
   ngOnInit(): void {
-    this.getAllData();
-
     this.oneSecondTimer = timer(0, 1000)
       .pipe(
         map(() => {
           let processList = this.socketIO.getProcessList();
+          let cooldownIndex = this.socketIO
+            .getCooldownEmails()
+            .indexOf(<string>this.userInfo?.info.email);
+
+          if (cooldownIndex > -1) {
+            //users email is in cooldown
+            this.getCooldownTimer();
+            this.socketIO.resetCooldownEmails();
+          }
+
+          if (!this.fastCooldown) {
+            if (new Date() < this.cooldownUntil) {
+              //user is in cooldown
+              this.userInCooldown = true;
+              this.disableButtons();
+              this.songsBeenReset = false;
+            } else {
+              this.userInCooldown = false;
+              if (!this.songsBeenReset) {
+                this.resetSongList();
+              }
+            }
+          }
 
           this.oldQueueLength = this.queueList.length;
 
-          //Set boolean for alert if playback is paused
-          if (this.ETAPollCount >= this.pollTimeout) {
-            this.playbackPaused = true;
-          } else {
-            this.playbackPaused = false;
+          if (this.socketIO.getUpdateNowPlayingFlag()) {
+            this.getNowPlaying();
           }
 
-          //Check if new nowplaying section is required
-          if (
-            this.nextSongETA < new Date() &&
-            this.ETAPollCount < this.pollTimeout
-          ) {
-            this.ETAPollCount++;
+          if (this.socketIO.getUpdateQueueFlag()) {
             this.getSongQueue();
-            this.getNowPlaying();
           }
 
           //Check if there are any songs being processed (requested, but not in queue yet)
@@ -99,13 +118,24 @@ export class MainComponent {
             }
           }
 
-          if (this.oldQueueLength < this.queueList.length) {
-            //queue length is shorter than before - playback resumed
-            this.playbackPaused = false;
+          //Disable songs in the queue
+          for (let Song of this.fullSongList) {
+            for (let Song2 of this.queueList) {
+              if (Song.artist === Song2.artist && Song.title === Song2.title) {
+                //Duplicate song found in queue
+                Song.soft_enabled = false;
+              }
+            }
           }
         })
       )
       .subscribe();
+  }
+
+  disableButtons() {
+    for (let song of this.fullSongList) {
+      song.soft_enabled = false;
+    }
   }
 
   ngOnDestroy(): void {
@@ -116,6 +146,21 @@ export class MainComponent {
     this.getSongQueue();
     this.getNowPlaying();
     this.getFullSongList();
+    this.getCooldownTimer();
+  }
+
+  getCooldownTimer() {
+    this.musicService
+      .getCooldown(this.userInfo?.info.email)
+      .subscribe((retrievedData) => {
+        this.cooldownUntil = new Date(retrievedData[0].reenableUser);
+      });
+  }
+
+  getEnableTime(date: string): Date {
+    let thedate = new Date(date);
+    thedate.setHours(thedate.getHours() + 6);
+    return thedate;
   }
 
   getFullSongList() {
@@ -150,7 +195,17 @@ export class MainComponent {
     });
   }
 
+  resetFastCooldown() {
+    this.fastCooldown = false;
+  }
+
   addToQueue(songID: number, requester: string = 'Undefined Email') {
+    this.fastCooldown = true;
+    setTimeout(() => {
+      this.resetFastCooldown();
+    }, 10000);
+    this.disableButtons();
+    this.userInCooldown = true;
     this.lastRequest = songID;
     this.socketIO.newSong(songID);
     this.socketIO.addRequestCount(requester);
@@ -180,16 +235,16 @@ export class MainComponent {
     });
 
     if (newSongList.length == 0) {
+      //No songs found - display an error message
     } else {
       //songs found - do something
       this.displayedSongList = newSongList;
       this.showPagination = false;
     }
   }
-
   resetSongList() {
-    this.displayedSongList = this.fullSongList;
-    this.showSongList();
+    this.getFullSongList();
+    this.songsBeenReset = true;
   }
 
   showRandomSongs() {
