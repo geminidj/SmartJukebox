@@ -61,19 +61,6 @@ export class MusicService {
     );
   }
 
-  enableSong(songID: number): Subscription {
-    const payload = new HttpParams()
-      .set('songid', songID)
-      .set('password', this.enablePassword);
-    return this.httpClient
-      .post(
-        'http://localhost:8080/enablesong',
-        payload.toString(),
-        this.httpPostOptions
-      )
-      .subscribe();
-  }
-
   addToQueue(songID: number, requester: string): Subscription {
     const payload = new HttpParams()
       .set('username', requester)

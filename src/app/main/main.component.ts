@@ -20,6 +20,7 @@ export class MainComponent {
   queueList: Song[] = [];
 
   fullSongList: Song[] = [];
+  backupSongList: Song[] = [];
 
   nowPlaying: Song[] = [];
 
@@ -40,6 +41,7 @@ export class MainComponent {
   searchTerm: string = '';
 
   userInfo?: UserInfo;
+  songsBeenReset: boolean = false;
 
   fastCooldown: boolean = false;
 
@@ -78,10 +80,18 @@ export class MainComponent {
             this.socketIO.resetCooldownEmails();
           }
 
-          console.log('fastCooldown: ' + this.fastCooldown);
           if (!this.fastCooldown) {
-            console.log('setting cooldown status');
-            this.setCooldownStatus();
+            if (new Date() < this.cooldownUntil) {
+              //user is in cooldown
+              this.userInCooldown = true;
+              this.disableButtons();
+              this.songsBeenReset = false;
+            } else {
+              this.userInCooldown = false;
+              if (!this.songsBeenReset) {
+                this.resetSongList();
+              }
+            }
           }
 
           this.oldQueueLength = this.queueList.length;
@@ -122,23 +132,10 @@ export class MainComponent {
       .subscribe();
   }
 
-  setCooldownStatus() {
-    if (new Date() < this.cooldownUntil) {
-      //user is in cooldown
-      this.userInCooldown = true;
-      this.disableButtons();
-    } else {
-      this.userInCooldown = false;
-      this.resetButtons();
-    }
-  }
   disableButtons() {
-    for (let song of this.displayedSongList) {
+    for (let song of this.fullSongList) {
       song.soft_enabled = false;
     }
-  }
-  resetButtons() {
-    this.resetSongList();
   }
 
   ngOnDestroy(): void {
@@ -170,20 +167,6 @@ export class MainComponent {
     this.musicService.getFullSongList().subscribe((retrievedData: Song[]) => {
       this.fullSongList = retrievedData;
       this.getNumSongs();
-
-      for (let Song of this.fullSongList) {
-        //test if song should be enabled or not
-        if (!Song.soft_enabled) {
-          let enableTime = this.getEnableTime(Song.date_played);
-
-          //KEYWORD - I suspect this is still wrong
-          //If .date_played is ages ago, enableTime may still be before, and it is immediately reset.
-
-          if (new Date() >= enableTime) {
-            this.musicService.enableSong(Song.ID);
-          }
-        }
-      }
     });
   }
 
@@ -260,8 +243,8 @@ export class MainComponent {
     }
   }
   resetSongList() {
-    this.displayedSongList = this.fullSongList;
-    this.showSongList();
+    this.getFullSongList();
+    this.songsBeenReset = true;
   }
 
   showRandomSongs() {
