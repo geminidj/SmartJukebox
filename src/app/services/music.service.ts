@@ -61,6 +61,23 @@ export class MusicService {
     );
   }
 
+  addVotes(votes: number, songID: number, email: string): Subscription {
+    const payload = new HttpParams()
+      .set('votes', votes)
+      .set('songid', songID)
+      .set('email', email);
+
+    return this.httpClient
+      .post(
+        'http://localhost:8080/addvotes',
+        payload.toString(),
+        this.httpPostOptions
+      )
+      .subscribe((v) => {
+        console.log(v);
+      });
+  }
+
   addToQueue(songID: number, requester: string): Subscription {
     const payload = new HttpParams()
       .set('username', requester)

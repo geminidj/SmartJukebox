@@ -33,7 +33,7 @@
 <div class="panel">
   <div class="row">
     <div class="col10"><p></p></div>
-    <app-user-request-information></app-user-request-information>
+    <app-user-request-information class="col80"></app-user-request-information>
     <div class="col10"><p></p></div>
   </div>
 </div>
@@ -50,6 +50,7 @@
           [artist]="song.artist"
           [position]="song.id"
           [title]="song.title"
+          [email]="userInfo!.info.email"
         ></app-songitem>
       </div>
     </div>
