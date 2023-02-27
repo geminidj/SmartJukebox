@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { OAuthModule } from 'angular-oauth2-oidc';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -18,7 +16,11 @@ import { CooldowntimerComponent } from './cooldowntimer/cooldowntimer.component'
 import { SongupnextComponent } from './songupnext/songupnext.component';
 import { NosongswarningComponent } from './nosongswarning/nosongswarning.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalNosongsfoundComponent } from './modal-nosongsfound/modal-nosongsfound.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 
+// @ts-ignore
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +33,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CooldowntimerComponent,
     SongupnextComponent,
     NosongswarningComponent,
+    ModalNosongsfoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +42,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     FormsModule,
     OAuthModule.forRoot(),
     BrowserAnimationsModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
   providers: [SocketioService],
   bootstrap: [AppComponent],

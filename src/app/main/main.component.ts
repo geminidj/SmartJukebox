@@ -4,6 +4,9 @@ import { Song } from '../song';
 import { GoogleApiService, UserInfo } from '../services/google-api.service';
 import { SocketioService } from '../services/socketio.service';
 import { map, Subscription, timer } from 'rxjs';
+import { MatDialogConfig } from '@angular/material/dialog';
+import { ModalNosongsfoundComponent } from '../modal-nosongsfound/modal-nosongsfound.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-main',
@@ -54,7 +57,8 @@ export class MainComponent {
   constructor(
     private musicService: MusicService,
     private readonly googleApi: GoogleApiService,
-    private socketIO: SocketioService
+    private socketIO: SocketioService,
+    public matDialog: MatDialog
   ) {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
@@ -255,15 +259,28 @@ export class MainComponent {
     });
 
     if (newSongList.length == 0) {
-      this.noSongsFound = true;
-      setTimeout(() => {
-        this.resetNoSongsFound();
-      }, 4000);
+      // this.noSongsFound = true;
+      // setTimeout(() => {
+      //   this.resetNoSongsFound();
+      // }, 4000);
+      this.showNoSongsFoundModal();
     } else {
       //songs found - do something
       this.displayedSongList = newSongList;
       this.showPagination = false;
     }
+  }
+
+  showNoSongsFoundModal() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.id = 'modal-component';
+    dialogConfig.height = '350px';
+    dialogConfig.width = '600px';
+    const modalDialog = this.matDialog.open(
+      ModalNosongsfoundComponent,
+      dialogConfig
+    );
   }
 
   resetNoSongsFound() {
