@@ -14,7 +14,6 @@ import { SocketioService } from './services/socketio.service';
 import { PlaybackwarningComponent } from './playbackwarning/playbackwarning.component';
 import { CooldowntimerComponent } from './cooldowntimer/cooldowntimer.component';
 import { SongupnextComponent } from './songupnext/songupnext.component';
-import { NosongswarningComponent } from './nosongswarning/nosongswarning.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalNosongsfoundComponent } from './modal-nosongsfound/modal-nosongsfound.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +31,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     PlaybackwarningComponent,
     CooldowntimerComponent,
     SongupnextComponent,
-    NosongswarningComponent,
     ModalNosongsfoundComponent,
   ],
   imports: [

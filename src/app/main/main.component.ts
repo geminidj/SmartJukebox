@@ -111,6 +111,7 @@ export class MainComponent {
           }
 
           if (this.socketIO.getUpdateUpNextFlag()) {
+            console.log('FLAG WAS RAISED');
             this.getUpNext();
           }
 
@@ -196,6 +197,7 @@ export class MainComponent {
   }
 
   getUpNext() {
+    console.log('getUpNext called');
     this.musicService.getUpNext().subscribe((retrievedData: Song[]) => {
       this.upNextList = retrievedData;
     });
