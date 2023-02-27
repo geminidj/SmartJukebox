@@ -18,6 +18,7 @@ export class MainComponent {
   pageNumbers: number[] = [];
   showPagination: boolean = true;
   queueList: Song[] = [];
+  upNextList: Song[] = [];
 
   fullSongList: Song[] = [];
   backupSongList: Song[] = [];
@@ -45,7 +46,6 @@ export class MainComponent {
 
   fastCooldown: boolean = false;
 
-  nextSongETA: Date = new Date();
   ETAPollCount: number = 0;
 
   playbackPaused: boolean = false;
@@ -70,6 +70,7 @@ export class MainComponent {
       .pipe(
         map(() => {
           let processList = this.socketIO.getProcessList();
+
           let cooldownIndex = this.socketIO
             .getCooldownEmails()
             .indexOf(<string>this.userInfo?.info.email);
@@ -104,8 +105,12 @@ export class MainComponent {
             this.getSongQueue();
           }
 
-          //Check if there are any songs being processed (requested, but not in queue yet)
+          if (this.socketIO.getUpdateUpNextFlag()) {
+            this.getUpNext();
+          }
+
           if (processList.length > 0) {
+            //Check if there are any songs being processed (requested, but not in queue yet)
             this.getSongQueue();
             for (let Song of this.queueList) {
               for (let i = 0; i < processList.length; i++) {
@@ -121,6 +126,14 @@ export class MainComponent {
           //Disable songs in the queue
           for (let Song of this.fullSongList) {
             for (let Song2 of this.queueList) {
+              if (Song.artist === Song2.artist && Song.title === Song2.title) {
+                //Duplicate song found in queue
+                Song.soft_enabled = false;
+              }
+            }
+          }
+          for (let Song of this.fullSongList) {
+            for (let Song2 of this.upNextList) {
               if (Song.artist === Song2.artist && Song.title === Song2.title) {
                 //Duplicate song found in queue
                 Song.soft_enabled = false;
@@ -143,6 +156,7 @@ export class MainComponent {
   }
 
   getAllData() {
+    this.getUpNext();
     this.getSongQueue();
     this.getNowPlaying();
     this.getFullSongList();
@@ -173,7 +187,12 @@ export class MainComponent {
   getSongQueue() {
     this.musicService.getQueue().subscribe((retrievedData: Song[]) => {
       this.queueList = retrievedData;
-      this.nextSongETA = new Date(retrievedData[0].ETA);
+    });
+  }
+
+  getUpNext() {
+    this.musicService.getUpNext().subscribe((retrievedData: Song[]) => {
+      this.upNextList = retrievedData;
     });
   }
 
@@ -210,7 +229,7 @@ export class MainComponent {
     this.socketIO.newSong(songID);
     this.socketIO.addRequestCount(requester);
     this.musicService.addToQueue(songID, requester);
-    this.musicService.getQueue().subscribe();
+    this.getSongQueue();
     this.ETAPollCount = 0;
   }
 

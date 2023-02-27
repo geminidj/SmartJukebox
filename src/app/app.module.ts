@@ -15,6 +15,7 @@ import { UserRequestInformationComponent } from './user-request-information/user
 import { SocketioService } from './services/socketio.service';
 import { PlaybackwarningComponent } from './playbackwarning/playbackwarning.component';
 import { CooldowntimerComponent } from './cooldowntimer/cooldowntimer.component';
+import { SongupnextComponent } from './songupnext/songupnext.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { CooldowntimerComponent } from './cooldowntimer/cooldowntimer.component'
     UserRequestInformationComponent,
     PlaybackwarningComponent,
     CooldowntimerComponent,
+    SongupnextComponent,
   ],
   imports: [
     BrowserModule,

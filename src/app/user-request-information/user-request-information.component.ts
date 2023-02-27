@@ -25,6 +25,8 @@ export class UserRequestInformationComponent {
 
   userInfo?: UserInfo;
 
+  totalDailyVotes: number = 0;
+  usedVotes: number = 0;
   totalDailySongs: number = 0;
   usedRequests: number = 0;
 
@@ -43,7 +45,10 @@ export class UserRequestInformationComponent {
           map(() => {
             if (this.socketIO.getPlaycountFlagStatus()) {
               this.getTodayPlayCount(this.userInfo!.info.email);
-              this.socketIO.resetPlaycountFlag();
+            }
+
+            if (this.socketIO.getVotesUpdateFlag()) {
+              this.getTodayPlayCount(this.userInfo!.info.email);
             }
           })
         )
@@ -68,6 +73,7 @@ export class UserRequestInformationComponent {
         let myObj: { [index: string]: any };
         myObj = result;
         this.usedRequests = myObj[0].requeststoday;
+        this.usedVotes = myObj[0].votesused;
       });
   }
 
@@ -76,6 +82,7 @@ export class UserRequestInformationComponent {
       .get<any>('http://localhost:8080/getmaxdailyrequests')
       .subscribe((result) => {
         this.totalDailySongs = result.playcount;
+        this.totalDailyVotes = result.votecount;
       });
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
+import { MusicService } from './music.service';
 
 export const environment = {
   production: false,
@@ -11,6 +12,7 @@ export const environment = {
 export class SocketioService {
   private socket: any;
   private nowPlayingUpdateFlag: boolean = false;
+
   private playcountUpdateFlag: boolean = true;
 
   private queueUpdateFlag: boolean = false;
@@ -18,6 +20,8 @@ export class SocketioService {
   private cooldownEmails: string[] = [];
 
   private beingProcessed: number[] = [];
+  private votesUpdateFlag: boolean = false;
+  private updateUpnextFlag: boolean = false;
 
   constructor() {}
 
@@ -47,6 +51,31 @@ export class SocketioService {
     this.socket.on('update playcount', () => {
       this.playcountUpdateFlag = true;
     });
+
+    this.socket.on('client-update-votes', () => {
+      this.votesUpdateFlag = true;
+    });
+
+    this.socket.on('update upnext', () => {
+      this.updateUpnextFlag = true;
+      this.queueUpdateFlag = true;
+    });
+  }
+
+  emitMessage(message1: string, message2: string) {
+    this.socket.emit(message1, message2);
+  }
+
+  getVotesUpdateFlag() {
+    let result = this.votesUpdateFlag;
+    this.votesUpdateFlag = false;
+    return result;
+  }
+
+  getUpdateUpNextFlag() {
+    let result = this.updateUpnextFlag;
+    this.updateUpnextFlag = false;
+    return result;
   }
 
   getCooldownEmails() {
@@ -87,11 +116,9 @@ export class SocketioService {
   }
 
   getPlaycountFlagStatus() {
-    return this.playcountUpdateFlag;
-  }
-
-  resetPlaycountFlag() {
+    let result = this.playcountUpdateFlag;
     this.playcountUpdateFlag = false;
+    return result;
   }
 
   disconnect() {
