@@ -7,4 +7,5 @@ export class Song {
   date_played: string = Date.prototype.toString();
   ETA: string = Date.prototype.toString();
   soft_enabled: boolean = true;
+  votes: number = 0;
 }

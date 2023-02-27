@@ -45,7 +45,10 @@ export class UserRequestInformationComponent {
           map(() => {
             if (this.socketIO.getPlaycountFlagStatus()) {
               this.getTodayPlayCount(this.userInfo!.info.email);
-              this.socketIO.resetPlaycountFlag();
+            }
+
+            if (this.socketIO.getVotesUpdateFlag()) {
+              this.getTodayPlayCount(this.userInfo!.info.email);
             }
           })
         )

@@ -15,18 +15,18 @@ export class SongitemComponent {
   @Input() songID: number = 0;
   @Input() artist: string = '';
   @Input() title: string = '';
-
-  totalVotes: number = 0;
+  @Input() votes: number = 0;
   inputVotes: number = 0;
 
-  constructor(private musicService: MusicService) {}
+  constructor(
+    private musicService: MusicService,
+    private socketIO: SocketioService
+  ) {}
 
   onClick(songID: number) {
-    console.log('button clicked');
-    console.log(this.inputVotes);
-    console.log(songID);
-    console.log(this.email);
-
+    console.log('addvotes');
+    console.log('this.inputVotes:', this.inputVotes, ' songID:', songID);
     this.musicService.addVotes(this.inputVotes, songID, this.email);
+    this.socketIO.emitMessage('update votelist', 'update votelist');
   }
 }

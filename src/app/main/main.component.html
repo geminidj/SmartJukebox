@@ -42,7 +42,25 @@
   <div class="row">
     <div class="col10"><p></p></div>
     <div class="col80">
-      <h1>Current queue</h1>
+      <h1>UP NEXT:</h1>
+      <div class="songlist">
+        <app-songupnext
+        *ngFor="let song of upNextList; let i = index"
+        [songID]="song.songID"
+        [artist]="song.artist"
+        [position]="song.id"
+        [title]="song.title"></app-songupnext>
+      </div>
+    </div>
+    <div class="col10"><p></p></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="row">
+    <div class="col10"><p></p></div>
+    <div class="col80">
+      <h1>Current Queue</h1>
       <div class="songlist">
         <app-songitem
           *ngFor="let song of queueList; let i = index"
@@ -51,6 +69,7 @@
           [position]="song.id"
           [title]="song.title"
           [email]="userInfo!.info.email"
+          [votes]="song.votes"
         ></app-songitem>
       </div>
     </div>

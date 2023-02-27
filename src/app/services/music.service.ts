@@ -28,9 +28,6 @@ export class MusicService {
       email = 'greg@greghanson.co.uk';
     }
 
-    console.log('getCooldown called');
-    console.log('email: ' + email);
-
     const payload = new HttpParams().set('email', email);
     return this.httpClient.post(
       'http://localhost:8080/getcooldown',
@@ -47,6 +44,10 @@ export class MusicService {
   getFullSongList(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
     return this.httpClient.get<Song[]>('http://localhost:8080/getallsongs');
+  }
+
+  getUpNext(): Observable<Song[]> {
+    return this.httpClient.get<Song[]>('http://localhost:8080/getupnext');
   }
 
   getNowPlaying(): Observable<Song[]> {
