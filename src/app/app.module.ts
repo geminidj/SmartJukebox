@@ -16,6 +16,8 @@ import { SocketioService } from './services/socketio.service';
 import { PlaybackwarningComponent } from './playbackwarning/playbackwarning.component';
 import { CooldowntimerComponent } from './cooldowntimer/cooldowntimer.component';
 import { SongupnextComponent } from './songupnext/songupnext.component';
+import { NosongswarningComponent } from './nosongswarning/nosongswarning.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { SongupnextComponent } from './songupnext/songupnext.component';
     PlaybackwarningComponent,
     CooldowntimerComponent,
     SongupnextComponent,
+    NosongswarningComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,6 +38,7 @@ import { SongupnextComponent } from './songupnext/songupnext.component';
     HttpClientModule,
     FormsModule,
     OAuthModule.forRoot(),
+    BrowserAnimationsModule,
   ],
   providers: [SocketioService],
   bootstrap: [AppComponent],

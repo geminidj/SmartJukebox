@@ -14,6 +14,7 @@ export class MainComponent {
   oneSecondTimer: Subscription | undefined;
 
   userInCooldown: boolean = true;
+  noSongsFound: boolean = false;
 
   pageNumbers: number[] = [];
   showPagination: boolean = true;
@@ -254,12 +255,19 @@ export class MainComponent {
     });
 
     if (newSongList.length == 0) {
-      //No songs found - display an error message
+      this.noSongsFound = true;
+      setTimeout(() => {
+        this.resetNoSongsFound();
+      }, 4000);
     } else {
       //songs found - do something
       this.displayedSongList = newSongList;
       this.showPagination = false;
     }
+  }
+
+  resetNoSongsFound() {
+    this.noSongsFound = false;
   }
   resetSongList() {
     this.getFullSongList();
