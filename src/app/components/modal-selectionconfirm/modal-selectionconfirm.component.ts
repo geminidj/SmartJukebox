@@ -37,7 +37,8 @@ export class ModalSelectionconfirmComponent {
     this.dialogRef.close();
   }
 
-  closeModal() {
+  cancelConfirm() {
+    this.socketIO.raiseCancelRequestFlag();
     this.dialogRef.close();
   }
 }

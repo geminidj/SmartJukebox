@@ -115,8 +115,11 @@ export class MainComponent {
           }
 
           if (this.socketIO.getUpdateUpNextFlag()) {
-            console.log('FLAG WAS RAISED');
             this.getUpNext();
+          }
+
+          if (this.socketIO.getCancelRequestFlag()) {
+            this.resetFastCooldown();
           }
 
           if (processList.length > 0) {
