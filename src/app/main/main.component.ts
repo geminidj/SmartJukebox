@@ -4,6 +4,11 @@ import { Song } from '../song';
 import { GoogleApiService, UserInfo } from '../services/google-api.service';
 import { SocketioService } from '../services/socketio.service';
 import { map, Subscription, timer } from 'rxjs';
+import { MatDialogConfig } from '@angular/material/dialog';
+import { ModalNosongsfoundComponent } from '../components/modal-nosongsfound/modal-nosongsfound.component';
+import { ModalSelectionconfirmComponent } from '../components/modal-selectionconfirm/modal-selectionconfirm.component';
+import { ModalVoteconfirmComponent } from '../components/modal-voteconfirm/modal-voteconfirm.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-main',
@@ -14,6 +19,7 @@ export class MainComponent {
   oneSecondTimer: Subscription | undefined;
 
   userInCooldown: boolean = true;
+  noSongsFound: boolean = false;
 
   pageNumbers: number[] = [];
   showPagination: boolean = true;
@@ -50,10 +56,13 @@ export class MainComponent {
 
   playbackPaused: boolean = false;
 
+  cooldownDelay: number = 60000;
+
   constructor(
     private musicService: MusicService,
     private readonly googleApi: GoogleApiService,
-    private socketIO: SocketioService
+    private socketIO: SocketioService,
+    public matDialog: MatDialog
   ) {
     googleApi.userProfileSubject.subscribe((info) => {
       this.userInfo = info;
@@ -107,6 +116,10 @@ export class MainComponent {
 
           if (this.socketIO.getUpdateUpNextFlag()) {
             this.getUpNext();
+          }
+
+          if (this.socketIO.getCancelRequestFlag()) {
+            this.resetFastCooldown();
           }
 
           if (processList.length > 0) {
@@ -171,12 +184,6 @@ export class MainComponent {
       });
   }
 
-  getEnableTime(date: string): Date {
-    let thedate = new Date(date);
-    thedate.setHours(thedate.getHours() + 6);
-    return thedate;
-  }
-
   getFullSongList() {
     this.musicService.getFullSongList().subscribe((retrievedData: Song[]) => {
       this.fullSongList = retrievedData;
@@ -191,6 +198,7 @@ export class MainComponent {
   }
 
   getUpNext() {
+    console.log('getUpNext called');
     this.musicService.getUpNext().subscribe((retrievedData: Song[]) => {
       this.upNextList = retrievedData;
     });
@@ -215,22 +223,9 @@ export class MainComponent {
   }
 
   resetFastCooldown() {
-    this.fastCooldown = false;
-  }
-
-  addToQueue(songID: number, requester: string = 'Undefined Email') {
-    this.fastCooldown = true;
-    setTimeout(() => {
-      this.resetFastCooldown();
-    }, 10000);
-    this.disableButtons();
-    this.userInCooldown = true;
-    this.lastRequest = songID;
-    this.socketIO.newSong(songID);
-    this.socketIO.addRequestCount(requester);
-    this.musicService.addToQueue(songID, requester);
-    this.getSongQueue();
-    this.ETAPollCount = 0;
+    this.userInCooldown = false;
+    //this.fastCooldown = false;
+    this.getFullSongList();
   }
 
   searchSongList() {
@@ -254,12 +249,58 @@ export class MainComponent {
     });
 
     if (newSongList.length == 0) {
-      //No songs found - display an error message
+      this.showNoSongsFoundModal();
     } else {
       //songs found - do something
       this.displayedSongList = newSongList;
       this.showPagination = false;
     }
+  }
+
+  showNoSongsFoundModal() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.id = 'modal-component';
+    dialogConfig.height = '350px';
+    dialogConfig.width = '600px';
+    const modalDialog = this.matDialog.open(
+      ModalNosongsfoundComponent,
+      dialogConfig
+    );
+  }
+
+  showConfirmSelectionModal(
+    songID: number,
+    email: string | undefined,
+    artist: string,
+    title: string
+  ) {
+    if (!email) {
+      email = 'noemailfound';
+    }
+
+    //this.fastCooldown = true;
+    setTimeout(() => {
+      this.resetFastCooldown();
+    }, this.cooldownDelay);
+    this.disableButtons();
+    this.userInCooldown = true;
+
+    let data = { songID: songID, email: email, artist: artist, title: title };
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.id = 'modal-component';
+    dialogConfig.height = '350px';
+    dialogConfig.width = '600px';
+    dialogConfig.data = data;
+    const modalDialog = this.matDialog.open(
+      ModalSelectionconfirmComponent,
+      dialogConfig
+    );
+  }
+
+  resetNoSongsFound() {
+    this.noSongsFound = false;
   }
   resetSongList() {
     this.getFullSongList();

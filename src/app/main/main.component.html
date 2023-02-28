@@ -104,7 +104,7 @@
           <tr *ngFor="let song of displayedSongList; let i = index">
             <td>{{song.artist}}</td>
             <td>{{song.title}}</td>
-            <button type="submit" (click)="addToQueue(song.ID,this.userInfo?.info?.email)" [disabled]="!song.soft_enabled" [ngClass]="{tooltip:!song.soft_enabled}" class="button-add">Add to
+            <button type="submit" (click)="showConfirmSelectionModal(song.ID,this.userInfo?.info?.email, song.artist,song.title)" [disabled]="!song.soft_enabled" [ngClass]="{tooltip:!song.soft_enabled}" class="button-add">Add to
               queue <span *ngIf="!song.soft_enabled" class="tooltiptext">This song is unavailable. You might be on cooldown, it might already be in the queue, or have been played recently.</span>
             </button>
 

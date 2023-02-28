@@ -1,0 +1,16 @@
+
+<div id="modal-content-wrapper">
+  <header id="modal-header">
+    <h1 id="modal-title">Confirm</h1>
+  </header>
+  <section id="modal-body">
+    <p>Are you sure you want to add these votes to this song?</p>
+    <p>Artist: {{this.artist}}</p>
+    <p>Title: {{this.title}}</p>
+    <p>Votes: {{this.votes}}</p>
+  </section>
+  <footer id="modal-footer">
+    <button mat-raised-button id="modal-confirm-button" (click)="confirmSelection(songID,email, votes)">Confirm</button>
+    <button mat-raised-button id="modal-cancel-button" (click)="closeModal()">Cancel</button>
+  </footer>
+</div>

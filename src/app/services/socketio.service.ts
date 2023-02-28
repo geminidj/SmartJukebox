@@ -11,6 +11,7 @@ export const environment = {
 })
 export class SocketioService {
   private socket: any;
+  private cancelRequestFlag: boolean = false;
   private nowPlayingUpdateFlag: boolean = false;
 
   private playcountUpdateFlag: boolean = true;
@@ -60,6 +61,16 @@ export class SocketioService {
       this.updateUpnextFlag = true;
       this.queueUpdateFlag = true;
     });
+  }
+
+  getCancelRequestFlag() {
+    let result = this.cancelRequestFlag;
+    this.cancelRequestFlag = false;
+    return result;
+  }
+
+  raiseCancelRequestFlag() {
+    this.cancelRequestFlag = true;
   }
 
   emitMessage(message1: string, message2: string) {

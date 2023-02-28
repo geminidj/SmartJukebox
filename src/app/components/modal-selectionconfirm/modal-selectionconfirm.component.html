@@ -1,0 +1,14 @@
+<div id="modal-content-wrapper">
+  <header id="modal-header">
+    <h1 id="modal-title">Confirm</h1>
+  </header>
+  <section id="modal-body">
+    <p>Are you sure you want to add this song to the queue?</p>
+    <p>Artist: {{this.artist}}</p>
+    <p>Title: {{this.title}}</p>
+  </section>
+  <footer id="modal-footer">
+    <button mat-raised-button id="modal-confirm-button" (click)="confirmSelection(songID,email)">Confirm</button>
+    <button mat-raised-button id="modal-cancel-button" (click)="cancelConfirm()">Cancel</button>
+  </footer>
+</div>
