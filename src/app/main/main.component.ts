@@ -56,6 +56,8 @@ export class MainComponent {
 
   playbackPaused: boolean = false;
 
+  cooldownDelay: number = 60000;
+
   constructor(
     private musicService: MusicService,
     private readonly googleApi: GoogleApiService,
@@ -218,22 +220,9 @@ export class MainComponent {
   }
 
   resetFastCooldown() {
-    this.fastCooldown = false;
-  }
-
-  addToQueue(songID: number, requester: string = 'Undefined Email') {
-    this.fastCooldown = true;
-    setTimeout(() => {
-      this.resetFastCooldown();
-    }, 10000);
-    this.disableButtons();
-    this.userInCooldown = true;
-    this.lastRequest = songID;
-    this.socketIO.newSong(songID);
-    this.socketIO.addRequestCount(requester);
-    this.musicService.addToQueue(songID, requester);
-    this.getSongQueue();
-    this.ETAPollCount = 0;
+    this.userInCooldown = false;
+    //this.fastCooldown = false;
+    this.getFullSongList();
   }
 
   searchSongList() {
@@ -286,6 +275,13 @@ export class MainComponent {
     if (!email) {
       email = 'noemailfound';
     }
+
+    //this.fastCooldown = true;
+    setTimeout(() => {
+      this.resetFastCooldown();
+    }, this.cooldownDelay);
+    this.disableButtons();
+    this.userInCooldown = true;
 
     let data = { songID: songID, email: email, artist: artist, title: title };
     const dialogConfig = new MatDialogConfig();
