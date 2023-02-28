@@ -9,6 +9,6 @@
 
   <input type="number" id="song-votes" name="song-votes"
          min="-1000" max="1000" [(ngModel)]="inputVotes">
-  <button type="submit" (click)="onClick(songID)">Vote</button>
+  <button type="submit" (click)="showConfirmVoteModal(songID, email, artist, title, inputVotes)">Vote</button>
   </form>
 </div>

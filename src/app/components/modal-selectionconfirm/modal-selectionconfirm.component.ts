@@ -5,7 +5,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MusicService } from '../../services/music.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SocketioService } from '../../services/socketio.service';
-import { FlagsService } from '../../services/flags.service';
 
 @Component({
   selector: 'app-modal-selectionconfirm',
@@ -17,12 +16,10 @@ export class ModalSelectionconfirmComponent {
   email: string = 'there should be an email address here';
   artist: string = 'Unknown';
   title: string = 'Unknown';
-  @Output() abortEmitter = new EventEmitter<boolean>();
 
   constructor(
     private musicService: MusicService,
     private socketIO: SocketioService,
-    private flag: FlagsService,
 
     private dialogRef: MatDialogRef<ModalSelectionconfirmComponent>,
     @Inject(MAT_DIALOG_DATA) data: any
@@ -41,8 +38,6 @@ export class ModalSelectionconfirmComponent {
   }
 
   closeModal() {
-    //INSERT ABORT EVENT EMITTER HERE
-    this.flag.raiseAbortSelectionFlag();
     this.dialogRef.close();
   }
 }
