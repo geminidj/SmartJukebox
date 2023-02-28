@@ -7,7 +7,6 @@ import { map, Subscription, timer } from 'rxjs';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { ModalNosongsfoundComponent } from '../components/modal-nosongsfound/modal-nosongsfound.component';
 import { ModalSelectionconfirmComponent } from '../components/modal-selectionconfirm/modal-selectionconfirm.component';
-import { ModalVoteconfirmComponent } from '../components/modal-voteconfirm/modal-voteconfirm.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -27,7 +26,6 @@ export class MainComponent {
   upNextList: Song[] = [];
 
   fullSongList: Song[] = [];
-  backupSongList: Song[] = [];
 
   nowPlaying: Song[] = [];
 
@@ -42,8 +40,6 @@ export class MainComponent {
 
   pageIndex: number = 1;
 
-  lastRequest: number = 0;
-
   numPages: number = 1;
   searchTerm: string = '';
 
@@ -51,8 +47,6 @@ export class MainComponent {
   songsBeenReset: boolean = false;
 
   fastCooldown: boolean = false;
-
-  ETAPollCount: number = 0;
 
   playbackPaused: boolean = false;
 
@@ -107,34 +101,40 @@ export class MainComponent {
           this.oldQueueLength = this.queueList.length;
 
           if (this.socketIO.getUpdateNowPlayingFlag()) {
+            console.log('updateNowPlayingFlag');
             this.getNowPlaying();
           }
 
           if (this.socketIO.getUpdateQueueFlag()) {
+            console.log('updateQueueFlag');
             this.getSongQueue();
           }
 
           if (this.socketIO.getUpdateUpNextFlag()) {
+            console.log('upNextFlag');
             this.getUpNext();
           }
 
           if (this.socketIO.getCancelRequestFlag()) {
+            console.log('cancelRequestFlag');
             this.resetFastCooldown();
           }
 
-          if (processList.length > 0) {
-            //Check if there are any songs being processed (requested, but not in queue yet)
-            this.getSongQueue();
-            for (let Song of this.queueList) {
-              for (let i = 0; i < processList.length; i++) {
-                if (Song.songID === processList[i]) {
-                  //Song in queue matches a song on the process list
-                  //Remove it from the process list
-                  this.socketIO.removeFromList(Song.songID);
-                }
-              }
-            }
-          }
+          // if (processList.length > 0) {
+          //   console.log('processlist > 0');
+          //   console.log(JSON.stringify(processList));
+          //   //Check if there are any songs being processed (requested, but not in queue yet)
+          //   this.getSongQueue();
+          //   for (let Song of this.queueList) {
+          //     for (let i = 0; i < processList.length; i++) {
+          //       if (Song.songID === processList[i]) {
+          //         //Song in queue matches a song on the process list
+          //         //Remove it from the process list
+          //         this.socketIO.removeFromList(Song.songID);
+          //       }
+          //     }
+          //   }
+          // }
 
           //Disable songs in the queue
           for (let Song of this.fullSongList) {
@@ -198,7 +198,6 @@ export class MainComponent {
   }
 
   getUpNext() {
-    console.log('getUpNext called');
     this.musicService.getUpNext().subscribe((retrievedData: Song[]) => {
       this.upNextList = retrievedData;
     });
@@ -206,11 +205,7 @@ export class MainComponent {
 
   getNowPlaying() {
     this.musicService.getNowPlaying().subscribe((retrievedData: Song[]) => {
-      if (this.nowPlaying === retrievedData) {
-        this.ETAPollCount = 0;
-      } else {
-        this.nowPlaying = retrievedData;
-      }
+      this.nowPlaying = retrievedData;
     });
   }
 
@@ -224,7 +219,6 @@ export class MainComponent {
 
   resetFastCooldown() {
     this.userInCooldown = false;
-    //this.fastCooldown = false;
     this.getFullSongList();
   }
 
@@ -293,10 +287,7 @@ export class MainComponent {
     dialogConfig.height = '350px';
     dialogConfig.width = '600px';
     dialogConfig.data = data;
-    const modalDialog = this.matDialog.open(
-      ModalSelectionconfirmComponent,
-      dialogConfig
-    );
+    this.matDialog.open(ModalSelectionconfirmComponent, dialogConfig);
   }
 
   resetNoSongsFound() {

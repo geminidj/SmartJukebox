@@ -1,10 +1,9 @@
 <div class="songentry row">
-  <div class="queueposition"> {{ position }} </div>
-  <div class="artist"> {{ artist }} </div>
-  <div class="title"> {{ title }} </div>
-  <div class="votes"> Current votes:{{ votes }}</div>
+  <div class="artist col"> {{ artist }} </div>
+  <div class="title col"> {{ title }} </div>
+  <div class="votes col"> Current votes:{{ votes }}</div>
 
-  <form>
+  <form class="col">
   <label for="song-votes">Votes for song:</label>
 
   <input type="number" id="song-votes" name="song-votes"

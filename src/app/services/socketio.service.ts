@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
-import { MusicService } from './music.service';
 
 export const environment = {
   production: false,
@@ -46,6 +45,7 @@ export class SocketioService {
     });
 
     this.socket.on('update queue', () => {
+      console.log('websocket: update queue recieved');
       this.queueUpdateFlag = true;
     });
 

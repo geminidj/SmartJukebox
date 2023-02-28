@@ -10,25 +10,16 @@
   </div>
 </div>
 
-<div class="warning-panel" *ngIf="playbackPaused">
-  <div class="row">
-    <div class="col10"><p></p></div>
-    <div class="col80">
-      <app-playbackwarning></app-playbackwarning>
-    </div>
-    <div class="col10"><p></p></div>
-  </div>
-</div>
-
-<div class="warning-panel" *ngIf="userInCooldown">
-  <div class="row">
-    <div class="col10"><p></p></div>
-    <div class="col80">
-      <h3>You are in cooldown.</h3>
-    </div>
-    <div class="col10"><p></p></div>
-  </div>
-</div>
+<!--THIS SECTION HAS BEEN DISABLED BECAUSE THERE IS NO WAY OF TRACKING IF PLAYBACK IS PAUSED AT THIS TIME-->
+<!--<div class="warning-panel" *ngIf="playbackPaused">-->
+<!--  <div class="row">-->
+<!--    <div class="col10"><p></p></div>-->
+<!--    <div class="col80">-->
+<!--      <app-playbackwarning></app-playbackwarning>-->
+<!--    </div>-->
+<!--    <div class="col10"><p></p></div>-->
+<!--  </div>-->
+<!--</div>-->
 
 <div class="panel">
   <div class="row">
@@ -60,7 +51,7 @@
   <div class="row">
     <div class="col10"><p></p></div>
     <div class="col80">
-      <h1>Current Queue</h1>
+      <h1>Voting section</h1>
       <div class="songlist">
         <app-songitem
           *ngFor="let song of queueList; let i = index"
@@ -72,6 +63,16 @@
           [votes]="song.votes"
         ></app-songitem>
       </div>
+    </div>
+    <div class="col10"><p></p></div>
+  </div>
+</div>
+
+<div class="warning-panel" *ngIf="userInCooldown">
+  <div class="row">
+    <div class="col10"><p></p></div>
+    <div class="col80">
+      <h3>You are in cooldown.</h3>
     </div>
     <div class="col10"><p></p></div>
   </div>
