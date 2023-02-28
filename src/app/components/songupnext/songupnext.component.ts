@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MusicService } from '../services/music.service';
+import { MusicService } from '../../services/music.service';
 
 @Component({
   selector: 'app-songupnext',

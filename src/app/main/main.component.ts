@@ -5,7 +5,9 @@ import { GoogleApiService, UserInfo } from '../services/google-api.service';
 import { SocketioService } from '../services/socketio.service';
 import { map, Subscription, timer } from 'rxjs';
 import { MatDialogConfig } from '@angular/material/dialog';
-import { ModalNosongsfoundComponent } from '../modal-nosongsfound/modal-nosongsfound.component';
+import { ModalNosongsfoundComponent } from '../components/modal-nosongsfound/modal-nosongsfound.component';
+import { ModalSelectionconfirmComponent } from '../components/modal-selectionconfirm/modal-selectionconfirm.component';
+import { ModalVoteconfirmComponent } from '../components/modal-voteconfirm/modal-voteconfirm.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -177,12 +179,6 @@ export class MainComponent {
       });
   }
 
-  getEnableTime(date: string): Date {
-    let thedate = new Date(date);
-    thedate.setHours(thedate.getHours() + 6);
-    return thedate;
-  }
-
   getFullSongList() {
     this.musicService.getFullSongList().subscribe((retrievedData: Song[]) => {
       this.fullSongList = retrievedData;
@@ -261,10 +257,6 @@ export class MainComponent {
     });
 
     if (newSongList.length == 0) {
-      // this.noSongsFound = true;
-      // setTimeout(() => {
-      //   this.resetNoSongsFound();
-      // }, 4000);
       this.showNoSongsFoundModal();
     } else {
       //songs found - do something
@@ -281,6 +273,29 @@ export class MainComponent {
     dialogConfig.width = '600px';
     const modalDialog = this.matDialog.open(
       ModalNosongsfoundComponent,
+      dialogConfig
+    );
+  }
+
+  showConfirmSelectionModal(
+    songID: number,
+    email: string | undefined,
+    artist: string,
+    title: string
+  ) {
+    if (!email) {
+      email = 'noemailfound';
+    }
+
+    let data = { songID: songID, email: email, artist: artist, title: title };
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.id = 'modal-component';
+    dialogConfig.height = '350px';
+    dialogConfig.width = '600px';
+    dialogConfig.data = data;
+    const modalDialog = this.matDialog.open(
+      ModalSelectionconfirmComponent,
       dialogConfig
     );
   }

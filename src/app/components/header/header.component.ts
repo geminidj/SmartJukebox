@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GoogleApiService, UserInfo } from '../services/google-api.service';
+import { GoogleApiService, UserInfo } from '../../services/google-api.service';
 
 @Component({
   selector: 'app-header',

@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { MusicService } from '../services/music.service';
-import { UsersService } from '../services/users.service';
-import { Song } from '../song';
+import { MusicService } from '../../services/music.service';
+import { UsersService } from '../../services/users.service';
+import { Song } from '../../song';
 import { map, Observable, Subscription, timer } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { GoogleApiService, UserInfo } from '../services/google-api.service';
-import { SocketioService } from '../services/socketio.service';
+import { GoogleApiService, UserInfo } from '../../services/google-api.service';
+import { SocketioService } from '../../services/socketio.service';
 
 @Component({
   selector: 'app-user-request-information',

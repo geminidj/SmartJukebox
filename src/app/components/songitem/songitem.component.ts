@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Input } from '@angular/core';
-import { MusicService } from '../services/music.service';
-import { GoogleApiService } from '../services/google-api.service';
-import { SocketioService } from '../services/socketio.service';
+import { MusicService } from '../../services/music.service';
+import { GoogleApiService } from '../../services/google-api.service';
+import { SocketioService } from '../../services/socketio.service';
 
 @Component({
   selector: 'app-songitem',
