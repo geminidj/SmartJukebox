@@ -8,7 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { SongitemComponent } from './components/songitem/songitem.component';
 import { MainComponent } from './main/main.component';
 import { GenericpanelComponent } from './components/genericpanel/genericpanel.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { UserRequestInformationComponent } from './components/user-request-information/user-request-information.component';
 import { SocketioService } from './services/socketio.service';
 import { PlaybackwarningComponent } from './components/playbackwarning/playbackwarning.component';
@@ -42,10 +42,7 @@ import {MatInputModule} from "@angular/material/input";
     ModalSelectionconfirmComponent,
     ModalVoteconfirmComponent,
     LoginComponent,
-    MatCardModule,
-    MatToolbarModule,
-    MatFormFieldModule,
-    MatInputModule,
+
   ],
   imports: [
     BrowserModule,
@@ -56,6 +53,11 @@ import {MatInputModule} from "@angular/material/input";
     BrowserAnimationsModule,
     MatButtonModule,
     MatDialogModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   providers: [SocketioService],
   bootstrap: [AppComponent],

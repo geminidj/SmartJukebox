@@ -12,19 +12,19 @@ const oAuthConfig: AuthConfig = {
   scope: 'openid profile email',
 };
 
-export interface UserInfo {
-  info: {
-    email: string;
-    given_name: string;
-    picture: string;
-  };
-}
+// export interface UserInfo {
+//   info: {
+//     email: string;
+//     given_name: string;
+//     picture: string;
+//   };
+// }
 
 @Injectable({
   providedIn: 'root',
 })
 export class GoogleApiService {
-  userProfileSubject = new Subject<UserInfo>();
+  //userProfileSubject = new Subject<UserInfo>();
 
   // constructor(
   //   private readonly oAuthService: OAuthService,
@@ -33,7 +33,7 @@ export class GoogleApiService {
   //   oAuthService.configure(oAuthConfig);
   //   oAuthService.loadDiscoveryDocument().then(() => {
   //     oAuthService.tryLoginImplicitFlow().then(() => {
-  //       if (!oAuthService.hasValidAccessToken()) {
+  //       if (!oAuthService.hasValidAccessToken()) {l
   //         oAuthService.initLoginFlow();
   //       } else {
   //         oAuthService.loadUserProfile().then((userProfile) => {

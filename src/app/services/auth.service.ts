@@ -1,13 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from "rxjs";
+
+export interface UserInfo {
+  info: {
+    email: string;
+    name: string;
+    picture: string;
+    isLoggedIn: boolean;
+  };
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  private bcrypt = require('bcrypt');
-  private myUser = [];
+  userProfileSubject = new Subject<UserInfo>();
 
   httpPostOptions = {
     headers: new HttpHeaders({
@@ -18,25 +27,30 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(data: any): Observable<any> {
-    console.log('LOGIN CALLED');
-    console.log(JSON.stringify(data));
+  // login(data: any): Observable<any> {
+  //   const payload = new HttpParams()
+  //     .set('email', data.email)
+  //     .set('password', data.password);
+  //
+  //   return this.http.post(
+  //     `http://localhost:8080/login`,
+  //     payload.toString(),
+  //     this.httpPostOptions
+  //   );
+  // }
 
-    this.bcrypt.genSalt(10, (err: any, salt: any) => {
-      this.bcrypt.hash(data.password, salt, (err: any, hash: any) => {
-        console.log('HASHED PASSWORD IS');
-        console.log(hash);
-      });
-    });
-
+  login(data: any) {
     const payload = new HttpParams()
       .set('email', data.email)
       .set('password', data.password);
 
-    return this.http.post(
+    this.http.post(
       `http://localhost:8080/login`,
       payload.toString(),
       this.httpPostOptions
-    );
+    ).subscribe(v=>{
+      console.log(JSON.stringify(v));
+      this.userProfileSubject.next(v as UserInfo)
+    });
   }
 }

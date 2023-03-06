@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { MusicService } from '../services/music.service';
 import { Song } from '../song';
-import { GoogleApiService, UserInfo } from '../services/google-api.service';
+import { GoogleApiService } from '../services/google-api.service';
 import { SocketioService } from '../services/socketio.service';
 import { map, Subscription, timer } from 'rxjs';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { ModalNosongsfoundComponent } from '../components/modal-nosongsfound/modal-nosongsfound.component';
 import { ModalSelectionconfirmComponent } from '../components/modal-selectionconfirm/modal-selectionconfirm.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AuthService, UserInfo } from "../services/auth.service";
 
 @Component({
   selector: 'app-main',
@@ -56,18 +57,25 @@ export class MainComponent {
     private musicService: MusicService,
     private readonly googleApi: GoogleApiService,
     private socketIO: SocketioService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    private readonly authService: AuthService,
   ) {
-    googleApi.userProfileSubject.subscribe((info) => {
+    // googleApi.userProfileSubject.subscribe((info) => {
+    //   this.userInfo = info;
+    //   this.getAllData();
+    // });
+    authService.userProfileSubject.subscribe((info)=>{
       this.userInfo = info;
       this.getAllData();
-    });
+    })
+
   }
 
-  ngOnInit(): void {
+  startApplication(){
     this.oneSecondTimer = timer(0, 1000)
       .pipe(
         map(() => {
+          console.log("One second tick");
           let processList = this.socketIO.getProcessList();
 
           let cooldownIndex = this.socketIO
@@ -152,6 +160,10 @@ export class MainComponent {
         })
       )
       .subscribe();
+  }
+
+  ngOnInit(): void {
+    this.startApplication();
   }
 
   disableButtons() {
