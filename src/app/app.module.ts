@@ -8,7 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { SongitemComponent } from './components/songitem/songitem.component';
 import { MainComponent } from './main/main.component';
 import { GenericpanelComponent } from './components/genericpanel/genericpanel.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { UserRequestInformationComponent } from './components/user-request-information/user-request-information.component';
 import { SocketioService } from './services/socketio.service';
 import { PlaybackwarningComponent } from './components/playbackwarning/playbackwarning.component';
@@ -20,6 +20,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ModalSelectionconfirmComponent } from './components/modal-selectionconfirm/modal-selectionconfirm.component';
 import { ModalVoteconfirmComponent } from './components/modal-voteconfirm/modal-voteconfirm.component';
+import { LoginComponent } from './components/login/login.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 
 // @ts-ignore
 @NgModule({
@@ -36,6 +41,8 @@ import { ModalVoteconfirmComponent } from './components/modal-voteconfirm/modal-
     ModalNosongsfoundComponent,
     ModalSelectionconfirmComponent,
     ModalVoteconfirmComponent,
+    LoginComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -46,6 +53,11 @@ import { ModalVoteconfirmComponent } from './components/modal-voteconfirm/modal-
     BrowserAnimationsModule,
     MatButtonModule,
     MatDialogModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   providers: [SocketioService],
   bootstrap: [AppComponent],

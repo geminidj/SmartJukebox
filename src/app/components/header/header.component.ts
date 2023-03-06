@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { GoogleApiService, UserInfo } from '../../services/google-api.service';
+import { GoogleApiService } from '../../services/google-api.service';
+import { AuthService } from "../../services/auth.service";
+import {UserInfo} from "../../services/auth.service";
 
 @Component({
   selector: 'app-header',
@@ -9,14 +11,16 @@ import { GoogleApiService, UserInfo } from '../../services/google-api.service';
 export class HeaderComponent {
   userInfo?: UserInfo;
 
-  constructor(private readonly googleApi: GoogleApiService) {
-    googleApi.userProfileSubject.subscribe((info) => {
-      this.userInfo = info;
-    });
+  constructor(private readonly googleApi: GoogleApiService,
+              private readonly authService: AuthService) {
+
+    authService.userProfileSubject.subscribe((info) =>{
+      this.userInfo = info
+    })
   }
 
   logout() {
-    this.googleApi.signout();
+
     window.location.reload();
   }
 }

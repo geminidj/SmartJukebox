@@ -1,8 +1,8 @@
 <div class="header row">
 
-  <img src="/src/assets/img/logo.png" alt="breachlan logo" class="logo col">
-  <h3 class="col-right user-info">Hi there {{userInfo?.info?.given_name}}</h3>
-  <img class="col-right" [src]="userInfo?.info?.picture">
+  <img src="https://www.breachlan.party/wp-content/uploads/2020/01/cropped-highres-transparent-background-4.png" alt="breachlan logo" class="logo col">
+  <h3 class="col-right user-info">Hi there {{userInfo!.info.name}}</h3>
+<!--  <img class="col-right" [src]="userInfo?.info?.picture">-->
   <button (click)="logout()">Logout</button>
 
 </div>
