@@ -1,26 +1,3 @@
-<div class="panel" *ngIf="!playbackPaused">
-  <div class="row">
-    <div class="col10"><p></p></div>
-    <div class="col80">
-      <h1>Now Playing</h1>
-      <h3>Artist: {{nowPlaying[0].artist}}</h3>
-      <h3>Title: {{nowPlaying[0].title}}</h3>
-    </div>
-    <div class="col10"><p></p></div>
-  </div>
-</div>
-
-<!--THIS SECTION HAS BEEN DISABLED BECAUSE THERE IS NO WAY OF TRACKING IF PLAYBACK IS PAUSED AT THIS TIME-->
-<!--<div class="warning-panel" *ngIf="playbackPaused">-->
-<!--  <div class="row">-->
-<!--    <div class="col10"><p></p></div>-->
-<!--    <div class="col80">-->
-<!--      <app-playbackwarning></app-playbackwarning>-->
-<!--    </div>-->
-<!--    <div class="col10"><p></p></div>-->
-<!--  </div>-->
-<!--</div>-->
-
 <div class="panel">
   <div class="row">
     <div class="col10"><p></p></div>
@@ -29,118 +6,147 @@
   </div>
 </div>
 
-<div class="panel">
-  <div class="row">
-    <div class="col10"><p></p></div>
-    <div class="col80">
-      <h1>UP NEXT:</h1>
-      <div class="songlist">
-        <app-songupnext
-        *ngFor="let song of upNextList; let i = index"
-        [songID]="song.songID"
-        [artist]="song.artist"
-        [position]="song.id"
-        [title]="song.title"></app-songupnext>
+<div *ngIf="userLoggedIn">
+
+  <div class="panel" *ngIf="!playbackPaused">
+    <div class="row">
+      <div class="col10"><p></p></div>
+      <div class="col80">
+        <h1>Now Playing</h1>
+        <h3>Artist: {{nowPlaying[0].artist}}</h3>
+        <h3>Title: {{nowPlaying[0].title}}</h3>
       </div>
+      <div class="col10"><p></p></div>
     </div>
-    <div class="col10"><p></p></div>
   </div>
-</div>
 
-<div class="panel">
-  <div class="row">
-    <div class="col10"><p></p></div>
-    <div class="col80">
-      <h1>Voting section</h1>
-      <div class="songlist">
-        <app-songitem
-          *ngFor="let song of queueList; let i = index"
-          [songID]="song.songID"
-          [artist]="song.artist"
-          [position]="song.id"
-          [title]="song.title"
-          [email]="userInfo!.info.email"
-          [votes]="song.votes"
-        ></app-songitem>
-      </div>
-    </div>
-    <div class="col10"><p></p></div>
-  </div>
-</div>
+  <!--THIS SECTION HAS BEEN DISABLED BECAUSE THERE IS NO WAY OF TRACKING IF PLAYBACK IS PAUSED AT THIS TIME-->
+  <!--<div class="warning-panel" *ngIf="playbackPaused">-->
+  <!--  <div class="row">-->
+  <!--    <div class="col10"><p></p></div>-->
+  <!--    <div class="col80">-->
+  <!--      <app-playbackwarning></app-playbackwarning>-->
+  <!--    </div>-->
+  <!--    <div class="col10"><p></p></div>-->
+  <!--  </div>-->
+  <!--</div>-->
 
-<div class="warning-panel" *ngIf="userInCooldown">
-  <div class="row">
-    <div class="col10"><p></p></div>
-    <div class="col80">
-      <h3>You are in cooldown.</h3>
-    </div>
-    <div class="col10"><p></p></div>
-  </div>
-</div>
 
-<div class="panel">
-  <div class="row">
-    <div class="col10"><p></p></div>
-    <div class="col80">
-      <h1>Available Songs</h1>
-
-      <!--Search box and submit button-->
-      <form role="form" (submit)="searchSongList()" (reset)="resetSongList()">
-        <input type="text" name="search" id="search" required="required" [(ngModel)]="searchTerm"/>
-        <button type="submit">Search</button>
-        <button type="reset">Reset</button>
-      </form>
-      <form>
-        <button (click)="showRandomSongs()">Random Songs</button>
-      </form>
-
-      <!--Browse section-->
-      <div>
-        <table>
-          <tr>
-            <th class="table-artist">Artist</th>
-            <th class="table-title">Title</th>
-            <th class="table-add">Add</th>
-          </tr>
-          <tr *ngFor="let song of displayedSongList; let i = index">
-            <td>{{song.artist}}</td>
-            <td>{{song.title}}</td>
-            <button type="submit" (click)="showConfirmSelectionModal(song.ID,this.userInfo?.info?.email, song.artist,song.title)" [disabled]="!song.soft_enabled" [ngClass]="{tooltip:!song.soft_enabled}" class="button-add">Add to
-              queue <span *ngIf="!song.soft_enabled" class="tooltiptext">This song is unavailable. You might be on cooldown, it might already be in the queue, or have been played recently.</span>
-            </button>
-
-          </tr>
-        </table>
-      </div>
-      <div class="row">
-        <div class="col20"><p></p></div>
-        <div class="pagination col60" *ngIf="this.showPagination">
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[0]}"
-             (click)="showSongList(pageNumbers[0])">{{pageNumbers[0]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[1]}"
-             (click)="showSongList(pageNumbers[1])">{{pageNumbers[1]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[2]}"
-             (click)="showSongList(pageNumbers[2])">{{pageNumbers[2]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[3]}"
-             (click)="showSongList(pageNumbers[3])">{{pageNumbers[3]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[4]}"
-             (click)="showSongList(pageNumbers[4])">{{pageNumbers[4]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[5]}"
-             (click)="showSongList(pageNumbers[5])">{{pageNumbers[5]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[6]}"
-             (click)="showSongList(pageNumbers[6])">{{pageNumbers[6]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[7]}"
-             (click)="showSongList(pageNumbers[7])">{{pageNumbers[7]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[8]}"
-             (click)="showSongList(pageNumbers[8])">{{pageNumbers[8]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[9]}"
-             (click)="showSongList(pageNumbers[9])">{{pageNumbers[9]}}</a>
-          <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[10]}"
-             (click)="showSongList(pageNumbers[10])">{{pageNumbers[10]}}</a>
+  <div class="panel">
+    <div class="row">
+      <div class="col10"><p></p></div>
+      <div class="col80">
+        <h1>UP NEXT:</h1>
+        <div class="songlist">
+          <app-songupnext
+            *ngFor="let song of upNextList; let i = index"
+            [songID]="song.songID"
+            [artist]="song.artist"
+            [position]="song.id"
+            [title]="song.title"></app-songupnext>
         </div>
-        <div class="col20"><p></p></div>
       </div>
+      <div class="col10"><p></p></div>
     </div>
-    <div class="col10"><p></p></div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="col10"><p></p></div>
+      <div class="col80">
+        <h1>Voting section</h1>
+        <div class="songlist">
+          <app-songitem
+            *ngFor="let song of queueList; let i = index"
+            [songID]="song.songID"
+            [artist]="song.artist"
+            [position]="song.id"
+            [title]="song.title"
+            [email]="userInfo!.info.email"
+            [votes]="song.votes"
+          ></app-songitem>
+        </div>
+      </div>
+      <div class="col10"><p></p></div>
+    </div>
+  </div>
+
+  <div class="warning-panel" *ngIf="userInCooldown">
+    <div class="row">
+      <div class="col10"><p></p></div>
+      <div class="col80">
+        <h3>You are in cooldown.</h3>
+      </div>
+      <div class="col10"><p></p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="col10"><p></p></div>
+      <div class="col80">
+        <h1>Available Songs</h1>
+
+        <!--Search box and submit button-->
+        <form role="form" (submit)="searchSongList()" (reset)="resetSongList()">
+          <input type="text" name="search" id="search" required="required" [(ngModel)]="searchTerm" />
+          <button type="submit">Search</button>
+          <button type="reset">Reset</button>
+        </form>
+        <form>
+          <button (click)="showRandomSongs()">Random Songs</button>
+        </form>
+
+        <!--Browse section-->
+        <div>
+          <table>
+            <tr>
+              <th class="table-artist">Artist</th>
+              <th class="table-title">Title</th>
+              <th class="table-add">Add</th>
+            </tr>
+            <tr *ngFor="let song of displayedSongList; let i = index">
+              <td>{{song.artist}}</td>
+              <td>{{song.title}}</td>
+              <button type="submit"
+                      (click)="showConfirmSelectionModal(song.ID,this.userInfo?.info?.email, song.artist,song.title)"
+                      [disabled]="!song.soft_enabled" [ngClass]="{tooltip:!song.soft_enabled}" class="button-add">Add to
+                queue <span *ngIf="!song.soft_enabled" class="tooltiptext">This song is unavailable. You might be on cooldown, it might already be in the queue, or have been played recently.</span>
+              </button>
+
+            </tr>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col20"><p></p></div>
+          <div class="pagination col60" *ngIf="this.showPagination">
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[0]}"
+               (click)="showSongList(pageNumbers[0])">{{pageNumbers[0]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[1]}"
+               (click)="showSongList(pageNumbers[1])">{{pageNumbers[1]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[2]}"
+               (click)="showSongList(pageNumbers[2])">{{pageNumbers[2]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[3]}"
+               (click)="showSongList(pageNumbers[3])">{{pageNumbers[3]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[4]}"
+               (click)="showSongList(pageNumbers[4])">{{pageNumbers[4]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[5]}"
+               (click)="showSongList(pageNumbers[5])">{{pageNumbers[5]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[6]}"
+               (click)="showSongList(pageNumbers[6])">{{pageNumbers[6]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[7]}"
+               (click)="showSongList(pageNumbers[7])">{{pageNumbers[7]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[8]}"
+               (click)="showSongList(pageNumbers[8])">{{pageNumbers[8]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[9]}"
+               (click)="showSongList(pageNumbers[9])">{{pageNumbers[9]}}</a>
+            <a class="child" [ngClass]="{'active': pageIndex === pageNumbers[10]}"
+               (click)="showSongList(pageNumbers[10])">{{pageNumbers[10]}}</a>
+          </div>
+          <div class="col20"><p></p></div>
+        </div>
+      </div>
+      <div class="col10"><p></p></div>
+    </div>
   </div>
 </div>

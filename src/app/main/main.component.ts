@@ -17,6 +17,7 @@ import { AuthService, UserInfo } from "../services/auth.service";
 })
 export class MainComponent {
   oneSecondTimer: Subscription | undefined;
+  userLoggedIn: boolean = false;
 
   userInCooldown: boolean = true;
   noSongsFound: boolean = false;
@@ -67,6 +68,7 @@ export class MainComponent {
     authService.userProfileSubject.subscribe((info)=>{
       this.userInfo = info;
       this.getAllData();
+      this.userLoggedIn = this.userInfo?.info.isLoggedIn;
     })
 
   }
@@ -75,8 +77,6 @@ export class MainComponent {
     this.oneSecondTimer = timer(0, 1000)
       .pipe(
         map(() => {
-          console.log("One second tick");
-          let processList = this.socketIO.getProcessList();
 
           let cooldownIndex = this.socketIO
             .getCooldownEmails()

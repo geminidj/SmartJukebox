@@ -27,18 +27,6 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  // login(data: any): Observable<any> {
-  //   const payload = new HttpParams()
-  //     .set('email', data.email)
-  //     .set('password', data.password);
-  //
-  //   return this.http.post(
-  //     `http://localhost:8080/login`,
-  //     payload.toString(),
-  //     this.httpPostOptions
-  //   );
-  // }
-
   login(data: any) {
     const payload = new HttpParams()
       .set('email', data.email)
@@ -49,7 +37,6 @@ export class AuthService {
       payload.toString(),
       this.httpPostOptions
     ).subscribe(v=>{
-      console.log(JSON.stringify(v));
       this.userProfileSubject.next(v as UserInfo)
     });
   }

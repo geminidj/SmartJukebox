@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 import { MusicService } from '../../services/music.service';
 import { UsersService } from '../../services/users.service';
 import { map, Subscription, timer } from 'rxjs';
@@ -12,7 +12,7 @@ import { AuthService, UserInfo } from "../../services/auth.service";
   templateUrl: './user-request-information.component.html',
   styleUrls: ['./user-request-information.component.scss'],
 })
-export class UserRequestInformationComponent {
+export class UserRequestInformationComponent implements OnInit{
   httpPostOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -34,51 +34,34 @@ export class UserRequestInformationComponent {
     private musicService: MusicService,
     private userService: UsersService,
     private httpClient: HttpClient,
-    private readonly googleApi: GoogleApiService,
     private socketIO: SocketioService,
     private readonly authService: AuthService,
   ) {
-    authService.userProfileSubject.subscribe((info)=>{
+    this.authService.userProfileSubject.subscribe((info) =>{
       this.userInfo = info;
-      this.oneSecondTimer = timer(0, 1000)
-        .pipe(
-          map(() => {
-            console.log("User request 1 second tick");
-            console.log(this.userInfo?.info.email);
-            if (this.socketIO.getPlaycountFlagStatus()) {
-              this.getTodayPlayCount(this.userInfo!.info.email);
-            }
-
-            if (this.socketIO.getVotesUpdateFlag()) {
-              this.getTodayPlayCount(this.userInfo!.info.email);
-            }
-          })
-        )
-        .subscribe();
-
-    })
-
-    // googleApi.userProfileSubject.subscribe((info) => {
-    //   this.userInfo = info;
-    //
-    //   this.oneSecondTimer = timer(0, 1000)
-    //     .pipe(
-    //       map(() => {
-    //         if (this.socketIO.getPlaycountFlagStatus()) {
-    //           this.getTodayPlayCount(this.userInfo!.info.email);
-    //         }
-    //
-    //         if (this.socketIO.getVotesUpdateFlag()) {
-    //           this.getTodayPlayCount(this.userInfo!.info.email);
-    //         }
-    //       })
-    //     )
-    //     .subscribe();
-    // });
+    });
   }
 
   ngOnInit() {
+    this.startSection();
+  }
+
+  startSection(){
     this.getTotalDailyLimit();
+
+    this.oneSecondTimer = timer(0, 1000)
+      .pipe(
+        map(() => {
+          if (this.socketIO.getPlaycountFlagStatus()) {
+            this.getTodayPlayCount(this.userInfo!.info.email);
+          }
+
+          if (this.socketIO.getVotesUpdateFlag()) {
+            this.getTodayPlayCount(this.userInfo!.info.email);
+          }
+        })
+      )
+      .subscribe();
   }
 
   getTodayPlayCount(email: string) {
