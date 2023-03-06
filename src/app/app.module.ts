@@ -20,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ModalSelectionconfirmComponent } from './components/modal-selectionconfirm/modal-selectionconfirm.component';
 import { ModalVoteconfirmComponent } from './components/modal-voteconfirm/modal-voteconfirm.component';
+import { LoginComponent } from './components/login/login.component';
 
 // @ts-ignore
 @NgModule({
@@ -36,6 +37,7 @@ import { ModalVoteconfirmComponent } from './components/modal-voteconfirm/modal-
     ModalNosongsfoundComponent,
     ModalSelectionconfirmComponent,
     ModalVoteconfirmComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

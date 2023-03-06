@@ -64,10 +64,6 @@ export class MainComponent {
     });
   }
 
-  isLoggedIn(): boolean {
-    return this.googleApi.isLoggedIn();
-  }
-
   ngOnInit(): void {
     this.oneSecondTimer = timer(0, 1000)
       .pipe(
