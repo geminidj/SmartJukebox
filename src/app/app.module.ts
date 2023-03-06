@@ -21,6 +21,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ModalSelectionconfirmComponent } from './components/modal-selectionconfirm/modal-selectionconfirm.component';
 import { ModalVoteconfirmComponent } from './components/modal-voteconfirm/modal-voteconfirm.component';
 import { LoginComponent } from './components/login/login.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 
 // @ts-ignore
 @NgModule({
@@ -38,6 +42,10 @@ import { LoginComponent } from './components/login/login.component';
     ModalSelectionconfirmComponent,
     ModalVoteconfirmComponent,
     LoginComponent,
+    MatCardModule,
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   imports: [
     BrowserModule,
