@@ -57,6 +57,7 @@
         <h1>Voting</h1>
         <h3>When a song finishes playing, the song with the most votes will be moved to the queue above.</h3>
         <h3>You can vote songs down as well as up, including making them go below 0 votes.</h3>
+        <h3>A song with negative votes can still make it into the queue (if it's the highest voted song).</h3>
         <div class="songlist">
           <app-songitem
             *ngFor="let song of queueList; let i = index"
