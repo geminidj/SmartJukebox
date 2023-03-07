@@ -19,6 +19,8 @@ export class MainComponent {
   oneSecondTimer: Subscription | undefined;
   userLoggedIn: boolean = false;
 
+  cooldownTimerRemaining: string = '';
+
   userInCooldown: boolean = true;
   noSongsFound: boolean = false;
 
@@ -87,6 +89,9 @@ export class MainComponent {
             this.getCooldownTimer();
             this.socketIO.resetCooldownEmails();
           }
+
+          this.cooldownTimerRemaining = ((this.cooldownUntil.getTime() - new Date().getTime())/1000).toFixed()  + " seconds";
+
 
           if (!this.fastCooldown) {
             if (new Date() < this.cooldownUntil) {
