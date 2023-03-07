@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Subject } from "rxjs";
+import { Subject } from "rxjs";
+import { webServerUrl} from "../environment";
+
 
 export interface UserInfo {
   info: {
@@ -33,7 +35,7 @@ export class AuthService {
       .set('password', data.password);
 
     this.http.post(
-      `http://localhost:8080/login`,
+      webServerUrl + '/login',
       payload.toString(),
       this.httpPostOptions
     ).subscribe(v=>{

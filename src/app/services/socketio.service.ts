@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
+import { webSocketUrl } from "../environment";
 
 export const environment = {
   production: false,
-  SOCKET_ENDPOINT: 'http://localhost:3000',
+  SOCKET_ENDPOINT: webSocketUrl,
 };
 @Injectable({
   providedIn: 'root',

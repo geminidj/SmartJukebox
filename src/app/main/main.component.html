@@ -54,7 +54,9 @@
     <div class="row">
       <div class="col10"><p></p></div>
       <div class="col80">
-        <h1>Voting section</h1>
+        <h1>Voting</h1>
+        <h3>When a song finishes playing, the song with the most votes will be moved to the queue above.</h3>
+        <h3>You can vote songs down as well as up, including making them go below 0 votes.</h3>
         <div class="songlist">
           <app-songitem
             *ngFor="let song of queueList; let i = index"
@@ -111,7 +113,7 @@
               <button type="submit"
                       (click)="showConfirmSelectionModal(song.ID,this.userInfo?.info?.email, song.artist,song.title)"
                       [disabled]="!song.soft_enabled" [ngClass]="{tooltip:!song.soft_enabled}" class="button-add">Add to
-                queue <span *ngIf="!song.soft_enabled" class="tooltiptext">This song is unavailable. You might be on cooldown, it might already be in the queue, or have been played recently.</span>
+                voting section <span *ngIf="!song.soft_enabled" class="tooltiptext">This song is unavailable. You might be on cooldown, it might already be in the queue, or have been played recently.</span>
               </button>
 
             </tr>

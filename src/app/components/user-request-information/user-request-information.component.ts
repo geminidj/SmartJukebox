@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { GoogleApiService } from '../../services/google-api.service';
 import { SocketioService } from '../../services/socketio.service';
 import { AuthService, UserInfo } from "../../services/auth.service";
+import { webServerUrl } from "../../environment";
 
 @Component({
   selector: 'app-user-request-information',
@@ -69,7 +70,7 @@ export class UserRequestInformationComponent implements OnInit{
 
     return this.httpClient
       .post(
-        'http://localhost:8080/getuserdailyrequests',
+        webServerUrl + '/getuserdailyrequests',
         payload.toString(),
         this.httpPostOptions
       )
@@ -83,7 +84,7 @@ export class UserRequestInformationComponent implements OnInit{
 
   getTotalDailyLimit() {
     this.httpClient
-      .get<any>('http://localhost:8080/getmaxdailyrequests')
+      .get<any>(webServerUrl + '/getmaxdailyrequests')
       .subscribe((result) => {
         this.totalDailySongs = result.playcount;
         this.totalDailyVotes = result.votecount;
