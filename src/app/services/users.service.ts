@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Subject } from "rxjs";
+import { webServerUrl } from "../environment";
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +27,7 @@ export class UsersService {
 
     return this.httpClient
       .post(
-        'http://localhost:8080/adduser',
+        webServerUrl + '/adduser',
         payload.toString(),
         this.httpPostOptions
       )

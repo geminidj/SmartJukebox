@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
 import { Song } from '../song';
 import { SocketioService } from './socketio.service';
+import { webServerUrl } from "../environment";
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,7 @@ export class MusicService {
 
     const payload = new HttpParams().set('email', email);
     return this.httpClient.post(
-      'http://localhost:8080/getcooldown',
+      webServerUrl + '/getcooldown',
       payload.toString(),
       this.httpPostOptions
     );
@@ -38,27 +39,27 @@ export class MusicService {
 
   getQueue(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
-    return this.httpClient.get<Song[]>('http://localhost:8080/getqueue');
+    return this.httpClient.get<Song[]>(webServerUrl + '/getqueue');
   }
 
   getFullSongList(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
-    return this.httpClient.get<Song[]>('http://localhost:8080/getallsongs');
+    return this.httpClient.get<Song[]>(webServerUrl + '/getallsongs');
   }
 
   getUpNext(): Observable<Song[]> {
-    return this.httpClient.get<Song[]>('http://localhost:8080/getupnext');
+    return this.httpClient.get<Song[]>(webServerUrl + '/getupnext');
   }
 
   getNowPlaying(): Observable<Song[]> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
-    return this.httpClient.get<Song[]>('http://localhost:8080/getnowplaying');
+    return this.httpClient.get<Song[]>(webServerUrl +'/getnowplaying');
   }
 
   getNumSongs(): Observable<number> {
     //TODO add a try-catch to this so it gives some helpful error handling (non 200 HTTP codes)
     return this.httpClient.get<number>(
-      'http://localhost:8080/getnumberofsongs'
+      webServerUrl + '/getnumberofsongs'
     );
   }
 
@@ -70,7 +71,7 @@ export class MusicService {
 
     return this.httpClient
       .post(
-        'http://localhost:8080/addvotes',
+        webServerUrl + '/addvotes',
         payload.toString(),
         this.httpPostOptions
       )
@@ -88,7 +89,7 @@ export class MusicService {
 
     return this.httpClient
       .post(
-        'http://localhost:8080/addsong',
+        webServerUrl + '/addsong',
         payload.toString(),
         this.httpPostOptions
       )
